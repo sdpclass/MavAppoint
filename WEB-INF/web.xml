@@ -33,4 +33,12 @@
       <servlet-name>SignupServlet</servlet-name>
       <url-pattern>/signup</url-pattern>
   </servlet-mapping>
+    <servlet>
+      <servlet-name>AdvisingServlet</servlet-name>
+      <servlet-class>uta.mav.appoint.AdvisingServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+      <servlet-name>AdvisingServlet</servlet-name>
+      <url-pattern>/advising</url-pattern>
+  </servlet-mapping>
 </web-app>

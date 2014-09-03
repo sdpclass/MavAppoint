@@ -28,7 +28,7 @@
 			<div>
 				<ul class="nav navbar-nav">
 				<li class="active"><a href="index">Home</a></li>
-				<li><a href="#"> Advising </a></li>
+				<li><a href="advising"> Advising </a></li>
 				<li><a href="customize"> Customize</a></li>
 				</ul>
 				<ul class="nav navbar-nav navbar-right">
