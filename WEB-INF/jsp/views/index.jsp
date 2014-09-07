@@ -1,4 +1,4 @@
-<%@include file="templates/header.jsp" %>
+<jsp:include page='<%=(String) request.getAttribute("includeHeader")%>' />
 <div class="container">
 	<div class="jumbotron">
   		<h1> Maverick Advising </h1>
