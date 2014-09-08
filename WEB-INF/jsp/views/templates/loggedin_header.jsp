@@ -32,8 +32,8 @@
 				</ul>
 				<ul class="nav navbar-nav navbar-right">
 				
-				<li><a href="register"><span class="glyphicon glyphicon-user">Register</a></li>
-				<li><a href="login"><span class="glyphicon glyphicon-log-in">Login</a></li>
+				<li><a href="#">You are logged in.</a></li>
+				<li><a href="logout"><span class="glyphicon glyphicon-log-in">Logout</a></li>
 				</ul>
 			</div>
 		</div>
