@@ -35,11 +35,17 @@ public class LoginServlet extends HttpServlet {
 		sets.setEmailAddress(emailAddress);
 		sets.setPassword(password);
 		try{
+			//call db manager and authenticate user, return value will be 0 or
+			//an integer indicating a role
 			int check = DatabaseManager.CheckUser(sets);
-			if (check == 1){
-				session.setAttribute("authenticated", "1");
-				session.setAttribute("emailAddress", emailAddress);
+			if(check != 0){
+				setSession(emailAddress,check);
 				response.sendRedirect("index");
+			}
+			else{
+				//redirect back to login if authentication fails
+				//need to add a "invalid username or password" response
+				response.sendRedirect("login");
 			}
 		}
 		catch(Exception e){
@@ -47,4 +53,9 @@ public class LoginServlet extends HttpServlet {
 		}
 	}
 	
+	//set session attributes, email and role
+	void setSession(String email, int role){
+		session.setAttribute("emailAddress", email);
+		session.setAttribute("role", "" + role);
+	}
 }
