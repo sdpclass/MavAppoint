@@ -1,5 +1,10 @@
 package uta.mav.appoint;
-
+/******************************************
+ * @author John
+ * Basic dataset package. If you need to compare values against anything from
+ * a sql table, add it as a variable here and use it to compare
+ *
+ */
 public class GetSet {
 	private String password;
 	private String emailAddress;

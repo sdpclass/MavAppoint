@@ -1,4 +1,5 @@
-<%@include file="templates/header.jsp" %>
+<jsp:include page='<%=(String) request.getAttribute("includeHeader")%>' />
+
 <div class="container">
 	<nav class="navbar" role="navigation">
     	  <div class="container">

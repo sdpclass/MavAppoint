@@ -20,11 +20,21 @@ public class IndexServlet extends HttpServlet {
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		session = request.getSession();
-		String auth = (String)session.getAttribute("authenticated");
-		if (auth != null){
-			if (auth.equals("1")){
-				header = "templates/loggedin_header.jsp";
+		String role = (String)session.getAttribute("role");
+		if (role != null){
+			if (role.equals("1")){
+				header = "templates/advisor_header.jsp";
 				}
+			if (role.equals("2")){
+				header = "templates/student_header.jsp";
+				}
+			if (role.equals("3")){
+				header = "templates/admin_header.jsp";
+				}
+			if (role.equals("4")){
+				header = "templates/faculty_header.jsp";
+				}
+			
 		}
 		else{
 			header = "templates/header.jsp";

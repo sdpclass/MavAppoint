@@ -13,6 +13,8 @@ public class DatabaseManager {
 	public DatabaseManager(){
     }
 
+	
+	//create a connection to a database.
 	public static Connection ConnectDB(){
 	    try
 	    {
@@ -30,7 +32,7 @@ public class DatabaseManager {
 	}
 	
 	
-	
+	//function used to test the database connection - not really used now
 	public static void SQLFunction(String command, String line){
 		Connection con = DatabaseManager.ConnectDB();
 		if (con == null){
@@ -72,9 +74,11 @@ public class DatabaseManager {
         }
 		
 }
+	//user login checking, check username and password against database
+	//then return role if a match is found
 	public static int CheckUser(GetSet set) throws SQLException{
 		Connection conn = DatabaseManager.ConnectDB();
-		String command = "Select COUNT(*) from user where email=? and password=?";
+		String command = "Select COUNT(*),role from user where email=? and password=?";
 		PreparedStatement statement = conn.prepareStatement(command); 
 		statement.setString(1,set.getEmailAddress());
 		statement.setString(2,set.getPassword());
@@ -83,7 +87,21 @@ public class DatabaseManager {
 		
 		int count = 0;
 		while(res.next()){
-			count = res.getInt(1);
+			if (!(res.getInt(1) == 0)){
+				if (res.getString(2).toLowerCase().equals("advisor")){
+					count = 1;
+				}
+				else if (res.getString(2).toLowerCase().equals("student")){
+					count = 2;
+				}
+				else if (res.getString(2).toLowerCase().equals("admin")){
+					count = 3;
+				}
+				else if (res.getString(2).toLowerCase().equals("faculty")){
+					count = 4;
+				}
+			}
+				
 		}
 		conn.close();
 		return count;
