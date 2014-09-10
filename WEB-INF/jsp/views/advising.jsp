@@ -37,18 +37,30 @@ $(document).ready(function(){
 		
 		<div class="pull-right form-inline">
 			<div class="btn-group">
-				 
+				 	<form action="advising" method="post" name="advisor_form">
+				 	<input type=hidden name=advisor_button>
 		    		<%@ page import= "java.util.ArrayList" %>
 		    		<% ArrayList<String> array = (ArrayList<String>)session.getAttribute("advisors");
 		    			if (array != null){ %>
-		    				<button class="btn btn-warning" id=all>All</button>
+		    				<button class="btn btn-warning" id=all onclick="all()">All</button>
+		    				<script> function all(){
+		    							document.advisor_button.value = "all";
+		    							advisor_form.submit();
+		    						 }
+		    				</script>
 		    			<%	for (int i=0;i<array.size();i++){ %>
-		    					<button class="btn btn-warning" id=button<%=i%>><%=array.get(i)%></button>
+		    					<button class="btn btn-warning" id=button<%=i%> onclick="button<%=i%>()"><%=array.get(i)%></button>
+								<script> function button<%=i%>(){
+										document.advisor_button.value = "button <%=i%>"
+										advisor_form.submit();
+								}</script>
 						<%	}
 		    			} 
 		    			else{%>
 		    				<label> Log in to see Advisor schedules. </label>
 					 <% } %>
+					</form>
+
 			</div>
 		</div>
 		

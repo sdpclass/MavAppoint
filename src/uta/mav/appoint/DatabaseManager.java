@@ -146,4 +146,38 @@ public class DatabaseManager {
 		}
 		return arraylist;
 	}
+	
+	public ArrayList<GetSet> getAdvisorSchedule(String name){
+		ArrayList<GetSet> array = new ArrayList<GetSet>();
+		try {
+			Connection conn = this.ConnectDB();
+			PreparedStatement statement;
+			if (name.equals("all")){
+			String command = "SELECT pname,advising_date,advising_starttime,advising_endtime FROM user,advising_schedule,advisor_settings "
+							+ "WHERE user.userid=advisor_settings.userid AND user.userid=advising_schedule.userid AND studentid is null";
+			statement = conn.prepareStatement(command);
+			statement.setString(1,null);
+			}
+			else{
+				String command = "SELECT pname,advising_date,advising_starttime,advising_endtime FROM user,advising_schedule,advisor_settings "
+								+ "WHERE user.userid=advisor_settings.userid AND user.userid=advising_schedule.userid AND advisor_settings.pname=? AND studentid is null";
+				statement = conn.prepareStatement(command);
+				statement.setString(1,name);
+				statement.setString(2,null);
+				}
+			ResultSet res = statement.executeQuery();
+			while(res.next()){
+				GetSet set = new GetSet();
+				set.setName(res.getString(1));
+				set.setDate(res.getInt(2));
+				set.setStarttime(res.getInt(3));
+				set.setEndtime(res.getInt(4));
+				array.add(set);
+			}
+		}
+		catch(Exception e){
+			
+		}
+		return array;
+	}
 }
