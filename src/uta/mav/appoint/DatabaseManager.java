@@ -7,15 +7,28 @@ import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
 
 public class DatabaseManager {
 	
-	public DatabaseManager(){
+	private static DatabaseManager DB;
+	
+	private DatabaseManager(){
     }
+	
+	
+	//singleton
+	public static DatabaseManager getInstance(){
+		if (DB == null){
+			return (new DatabaseManager());
+		}
+		else
+			return DB;
+	}
 
 	
 	//create a connection to a database.
-	public static Connection ConnectDB(){
+	public Connection ConnectDB(){
 	    try
 	    {
 	    Class.forName("com.mysql.jdbc.Driver").newInstance();
@@ -34,7 +47,7 @@ public class DatabaseManager {
 	
 	//function used to test the database connection - not really used now
 	public static void SQLFunction(String command, String line){
-		Connection con = DatabaseManager.ConnectDB();
+		Connection con = DatabaseManager.getInstance().ConnectDB();
 		if (con == null){
 			System.out.println("Could not establish connection.");
 			return;
@@ -76,8 +89,8 @@ public class DatabaseManager {
 }
 	//user login checking, check username and password against database
 	//then return role if a match is found
-	public static int CheckUser(GetSet set) throws SQLException{
-		Connection conn = DatabaseManager.ConnectDB();
+	public int CheckUser(GetSet set) throws SQLException{
+		Connection conn = DatabaseManager.getInstance().ConnectDB();
 		String command = "Select COUNT(*),role from user where email=? and password=?";
 		PreparedStatement statement = conn.prepareStatement(command); 
 		statement.setString(1,set.getEmailAddress());
@@ -105,5 +118,32 @@ public class DatabaseManager {
 		}
 		conn.close();
 		return count;
+	}
+	
+	public int AddUser(GetSet set){
+		/*int check = 0;
+		Connection conn = DatabaseManager.ConnectDB();
+		String command = "INSERT INTO USER (email,password,role) VALUES(email=?,password=?,role=?)";
+		return check;
+		*/
+		return 0;
+	}
+	
+	public ArrayList<String> getAdvisors() throws SQLException{
+		ArrayList<String> arraylist = new ArrayList<String>();
+		try{
+			Connection conn = DatabaseManager.getInstance().ConnectDB();
+			String command = "SELECT pname FROM USER,ADVISOR_SETTINGS WHERE ROLE=? AND user.userid = advisor_settings.userid";
+			PreparedStatement statement = conn.prepareStatement(command);
+			statement.setString(1,"advisor");
+			ResultSet res = statement.executeQuery();
+			while (res.next()){
+				arraylist.add(res.getString(1));
+			}
+		}
+		catch(SQLException sq){
+		
+		}
+		return arraylist;
 	}
 }

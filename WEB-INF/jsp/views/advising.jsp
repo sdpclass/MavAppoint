@@ -1,5 +1,18 @@
 <jsp:include page='<%=(String) request.getAttribute("includeHeader")%>' />
-
+<script>
+$(document).ready(function(){
+	$('#calendar').fullCalendar({
+		header: {
+			left:'month,basicWeek,basicDay',
+			right: 'today, prev,next',
+			center: 'title'
+		},
+		dayClick: function(date,jsEvent,view){
+			alert('Clicked on: '+ date.format());
+		}
+	})
+});
+</script>
 <div class="container">
 	<nav class="navbar" role="navigation">
     	  <div class="container">
@@ -22,20 +35,20 @@
 
 	<div class="page-header">
 		
-		<div class="pull-left form-inline">
-			<div class="btn-group">
-				<button class="btn btn-primary" data-calendar-nav="prev"><< Prev</button>
-				<button class="btn btn-default" data-calendar-nav="today">Today</button>
-				<button class="btn btn-primary" data-calendar-nav="next">Next >></button>
-			</div>
-		</div>
-		
 		<div class="pull-right form-inline">
 			<div class="btn-group">
-				<button class="btn btn-warning" data-calendar-view="year">Year</button>
-				<button class="btn btn-warning active" data-calendar-view="month">Month</button>
-				<button class="btn btn-warning" data-calendar-view="week">Week</button>
-				<button class="btn btn-warning" data-calendar-view="day">Day</button>
+				 
+		    		<%@ page import= "java.util.ArrayList" %>
+		    		<% ArrayList<String> array = (ArrayList<String>)session.getAttribute("advisors");
+		    			if (array != null){ %>
+		    				<button class="btn btn-warning" id=all>All</button>
+		    			<%	for (int i=0;i<array.size();i++){ %>
+		    					<button class="btn btn-warning" id=button<%=i%>><%=array.get(i)%></button>
+						<%	}
+		    			} 
+		    			else{%>
+		    				<label> Log in to see Advisor schedules. </label>
+					 <% } %>
 			</div>
 		</div>
 		
@@ -47,11 +60,8 @@
 	</div>
 	<br/>
 	
-	<div class="row">
-		<div class="col-md-12">
-			<div id="calendar"></div>
-		</div>
-	</div>
+			<div id='calendar'></div>
+		
 	<br/><br/><hr>
 </div>
 <%@include file="templates/footer.jsp" %>

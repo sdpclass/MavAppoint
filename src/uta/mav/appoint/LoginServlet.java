@@ -37,7 +37,7 @@ public class LoginServlet extends HttpServlet {
 		try{
 			//call db manager and authenticate user, return value will be 0 or
 			//an integer indicating a role
-			int check = DatabaseManager.CheckUser(sets);
+			int check = DatabaseManager.getInstance().CheckUser(sets);
 			if(check != 0){
 				setSession(emailAddress,check);
 				response.sendRedirect("index");

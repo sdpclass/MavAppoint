@@ -8,6 +8,32 @@ package uta.mav.appoint;
 public class GetSet {
 	private String password;
 	private String emailAddress;
+	private String studentId;
+	private String role;
+	/**
+	 * @return the role
+	 */
+	public String getRole() {
+		return role;
+	}
+	/**
+	 * @param role the role to set
+	 */
+	public void setRole(String role) {
+		this.role = role;
+	}
+	/**
+	 * @return the studentId
+	 */
+	public String getStudentId() {
+		return studentId;
+	}
+	/**
+	 * @param studentId the studentId to set
+	 */
+	public void setStudentId(String studentId) {
+		this.studentId = studentId;
+	}
 	/**
 	 * @return the userName
 	 */
