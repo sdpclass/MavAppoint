@@ -26,10 +26,8 @@ public class DatabaseManager {
 			return DB;
 	}
 
-	
-	//create a connection to a database.
-	public Connection ConnectDB(){
-	    try
+	private Connection LocalDB(){
+		try
 	    {
 	    Class.forName("com.mysql.jdbc.Driver").newInstance();
 	    String jdbcUrl = "jdbc:mysql://localhost:3306/MavAppointDB";
@@ -42,6 +40,27 @@ public class DatabaseManager {
 	        System.out.println(e.toString());
 	    }
 	    return null;
+	}
+	
+	private Connection FreeMySqlHostingDB(){
+		try
+	    {
+	    Class.forName("com.mysql.jdbc.Driver").newInstance();
+	    String jdbcUrl = "jdbc:mysql://sql5.freemysqlhosting.net:3306/sql552006";
+	    String userid = "sql552006";
+	    String password = "nQ5%iV8";
+	    Connection conn = DriverManager.getConnection(jdbcUrl,userid,password);
+	    return conn;
+	    }
+	    catch (Exception e){
+	        System.out.println(e.toString());
+	    }
+		return null;
+	}
+	
+	//create a connection to a database.
+	public Connection ConnectDB(){
+	    return DatabaseManager.getInstance().FreeMySqlHostingDB();
 	}
 	
 	
