@@ -42,12 +42,12 @@
       <url-pattern>/customize</url-pattern>
   </servlet-mapping>
   <servlet>
-      <servlet-name>SignupServlet</servlet-name>
-      <servlet-class>uta.mav.appoint.SignupServlet</servlet-class>
+      <servlet-name>RegisterServlet</servlet-name>
+      <servlet-class>uta.mav.appoint.RegisterServlet</servlet-class>
   </servlet>
   <servlet-mapping>
-      <servlet-name>SignupServlet</servlet-name>
-      <url-pattern>/signup</url-pattern>
+      <servlet-name>RegisterServlet</servlet-name>
+      <url-pattern>/register</url-pattern>
   </servlet-mapping>
     <servlet>
       <servlet-name>AdvisingServlet</servlet-name>
