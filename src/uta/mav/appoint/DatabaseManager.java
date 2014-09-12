@@ -48,7 +48,7 @@ public class DatabaseManager {
 	    Class.forName("com.mysql.jdbc.Driver").newInstance();
 	    String jdbcUrl = "jdbc:mysql://sql5.freemysqlhosting.net:3306/sql552006";
 	    String userid = "sql552006";
-	    String password = "nQ5%iV8";
+	    String password = "nQ5%iV8!";
 	    Connection conn = DriverManager.getConnection(jdbcUrl,userid,password);
 	    return conn;
 	    }
@@ -110,7 +110,7 @@ public class DatabaseManager {
 	//then return role if a match is found
 	public int CheckUser(GetSet set) throws SQLException{
 		Connection conn = DatabaseManager.getInstance().ConnectDB();
-		String command = "Select COUNT(*),role from user where email=? and password=?";
+		String command = "SELECT COUNT(*),ROLE FROM USER WHERE EMAIL=? and PASSWORD=?";
 		PreparedStatement statement = conn.prepareStatement(command); 
 		statement.setString(1,set.getEmailAddress());
 		statement.setString(2,set.getPassword());
@@ -152,7 +152,7 @@ public class DatabaseManager {
 		ArrayList<String> arraylist = new ArrayList<String>();
 		try{
 			Connection conn = DatabaseManager.getInstance().ConnectDB();
-			String command = "SELECT pname FROM USER,ADVISOR_SETTINGS WHERE ROLE=? AND user.userid = advisor_settings.userid";
+			String command = "SELECT pname FROM USER,ADVISOR_SETTINGS WHERE ROLE=? AND USER.userid = ADVISOR_SETTINGS.userid";
 			PreparedStatement statement = conn.prepareStatement(command);
 			statement.setString(1,"advisor");
 			ResultSet res = statement.executeQuery();
@@ -178,8 +178,8 @@ public class DatabaseManager {
 			statement.setString(1,null);
 			}
 			else{
-				String command = "SELECT pname,advising_date,advising_starttime,advising_endtime FROM user,advising_schedule,advisor_settings "
-								+ "WHERE user.userid=advisor_settings.userid AND user.userid=advising_schedule.userid AND advisor_settings.pname=? AND studentid is null";
+				String command = "SELECT pname,advising_date,advising_starttime,advising_endtime FROM USER,ADVISING_SCHEDULE,ADVISOR_SETTINGS "
+								+ "WHERE USER.userid=ADVISOR_SETTINGS.userid AND USER.userid=ADVISING_SCHEDULE.userid AND ADVISOR_SETTINGS.pname=? AND studentid is null";
 				statement = conn.prepareStatement(command);
 				statement.setString(1,name);
 				statement.setString(2,null);
