@@ -3,7 +3,7 @@
 				<ul class="nav navbar-nav">
 				<li class="active"><a href="index">Home</a></li>
 				<li><a href="advising"> Update Schedule </a></li>
-				<li><a href="advising"> New Appointment </a></li>
+				<li><a href="appointments"> Appointments </a></li>
 				<li><a href="advising"> Customize Settings </a></li>
 				</ul>
 				<ul class="nav navbar-nav navbar-right">

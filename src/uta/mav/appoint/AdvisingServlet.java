@@ -10,6 +10,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import uta.mav.appoint.beans.AdvisingSchedule;
+
 /**
  * Servlet implementation class AdvisingServlet
  */
@@ -33,6 +35,11 @@ public class AdvisingServlet extends HttpServlet {
 					}
 					else{
 						//no advisors for department?
+					}
+					ArrayList<AdvisingSchedule> schedules = DatabaseManager.getInstance().getAdvisorSchedule("all");
+					System.out.printf("%d",schedules.size());
+					if (schedules.size() != 0){
+						session.setAttribute("schedules", schedules);
 					}
 			}
 			catch(Exception e){
@@ -78,7 +85,7 @@ public class AdvisingServlet extends HttpServlet {
 					//get advisor schedules
 					String advisor = request.getParameter("advisor_button");
 					if (advisor != null){
-						ArrayList<GetSet> schedule = DatabaseManager.getInstance().getAdvisorSchedule(advisor);
+						ArrayList<AdvisingSchedule> schedule = DatabaseManager.getInstance().getAdvisorSchedule(advisor);
 					}
 			}
 			catch(Exception e){
