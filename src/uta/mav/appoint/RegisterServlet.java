@@ -8,6 +8,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import uta.mav.appoint.db.DatabaseManager;
+
 /**
  * Servlet implementation class RegisterServlet
  */
@@ -38,7 +40,8 @@ public class RegisterServlet extends HttpServlet {
 		set.setPassword(password);
 		set.setRole(role);
 		try{
-			int check = DatabaseManager.getInstance().AddUser(set);
+			DatabaseManager dbm = new DatabaseManager();
+			int check = dbm.addUser(set);
 			if (check == 1){
 				//if adduser successful, log in as added user and redirect
 				//back to start

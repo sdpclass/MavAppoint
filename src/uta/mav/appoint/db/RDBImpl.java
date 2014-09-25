@@ -1,34 +1,19 @@
-package uta.mav.appoint;
+package uta.mav.appoint.db;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.ArrayList;
 
+import uta.mav.appoint.GetSet;
 import uta.mav.appoint.beans.AdvisingSchedule;
 import uta.mav.appoint.beans.Appointment;
-public class DatabaseManager {
-	
-	private static DatabaseManager DB;
-	
-	private DatabaseManager(){
-    }
-	
-	
-	//singleton
-	public static DatabaseManager getInstance(){
-		if (DB == null){
-			return (new DatabaseManager());
-		}
-		else
-			return DB;
-	}
 
-	private Connection LocalDB(){
+public class RDBImpl implements DBImplInterface{
+
+	public Connection connectDB(){
 		try
 	    {
 	    Class.forName("com.mysql.jdbc.Driver").newInstance();
@@ -44,82 +29,18 @@ public class DatabaseManager {
 	    return null;
 	}
 	
-	private Connection FreeMySqlHostingDB(){
-		try
-	    {
-	    Class.forName("com.mysql.jdbc.Driver").newInstance();
-	    String jdbcUrl = "jdbc:mysql://sql5.freemysqlhosting.net:3306/sql552006";
-	    String userid = "sql552006";
-	    String password = "nQ5%iV8!";
-	    Connection conn = DriverManager.getConnection(jdbcUrl,userid,password);
-	    return conn;
-	    }
-	    catch (Exception e){
-	        System.out.println(e.toString());
-	    }
-		return null;
-	}
-	
-	//create a connection to a database.
-	public Connection ConnectDB(){
-	    return DatabaseManager.getInstance().LocalDB();
-	}
-	
-	
-	//function used to test the database connection - not really used now
-	public static void SQLFunction(String command, String line){
-		Connection con = DatabaseManager.getInstance().ConnectDB();
-		if (con == null){
-			System.out.println("Could not establish connection.");
-			return;
-			}
-		
-		ResultSet rs;
-		ResultSetMetaData rsmd;
-		try{
-        Statement statement = con.createStatement();
-        if (line != null){
-        statement.executeUpdate(command + " " + line);
-        }
-        else{
-        	rs = statement.executeQuery(command);
-        	rsmd = rs.getMetaData();
-        	int columnsNumber = rsmd.getColumnCount();
-        	for (int i=1; i <= columnsNumber; i++){
-    			if (i > 1)
-    				System.out.print(",    ");
-    			System.out.print(rsmd.getColumnName(i));
-    		}
-        	System.out.println("");
-        	while(rs.next()){
-        		for (int i=1; i <= columnsNumber; i++){
-        			if (i > 1)
-        				System.out.print(",   ");
-        			String columnValue = rs.getString(i);
-        			System.out.print(columnValue);
-        		}
-        		System.out.println("");
-        	}
-        }
-        con.close();
-		}
-        catch(Exception e){
-        	System.out.println(e);
-        }
-		
-}
+			
 	//user login checking, check username and password against database
 	//then return role if a match is found
-	public int CheckUser(GetSet set) throws SQLException{
-		Connection conn = DatabaseManager.getInstance().ConnectDB();
+	public int checkUser(GetSet set) throws SQLException{
+		int count = 0;
+		try{
+		Connection conn = this.connectDB();
 		String command = "SELECT COUNT(*),ROLE FROM USER WHERE EMAIL=? and PASSWORD=?";
 		PreparedStatement statement = conn.prepareStatement(command); 
 		statement.setString(1,set.getEmailAddress());
 		statement.setString(2,set.getPassword());
-		
 		ResultSet res = statement.executeQuery();
-		
-		int count = 0;
 		while(res.next()){
 			if (!(res.getInt(1) == 0)){
 				if (res.getString(2).toLowerCase().equals("advisor")){
@@ -130,18 +51,20 @@ public class DatabaseManager {
 				}
 				else if (res.getString(2).toLowerCase().equals("admin")){
 					count = 3;
-				}
-				else if (res.getString(2).toLowerCase().equals("faculty")){
+				} else {
 					count = 4;
 				}
-			}
-				
+			}		
 		}
 		conn.close();
+		}
+		catch(SQLException e){
+			System.out.printf(e.toString());
+		}
 		return count;
 	}
 	
-	public int AddUser(GetSet set){
+	public int addUser(GetSet set){
 		/*int check = 0;
 		Connection conn = DatabaseManager.ConnectDB();
 		String command = "INSERT INTO USER (email,password,role) VALUES(email=?,password=?,role=?)";
@@ -153,7 +76,7 @@ public class DatabaseManager {
 	public ArrayList<String> getAdvisors() throws SQLException{
 		ArrayList<String> arraylist = new ArrayList<String>();
 		try{
-			Connection conn = DatabaseManager.getInstance().ConnectDB();
+			Connection conn = this.connectDB();
 			String command = "SELECT pname FROM USER,ADVISOR_SETTINGS WHERE ROLE=? AND USER.userid = ADVISOR_SETTINGS.userid";
 			PreparedStatement statement = conn.prepareStatement(command);
 			statement.setString(1,"advisor");
@@ -165,7 +88,7 @@ public class DatabaseManager {
 			conn.close();
 		}
 		catch(SQLException sq){
-		
+			System.out.printf(sq.toString());
 		}
 		return arraylist;
 	}
@@ -173,7 +96,7 @@ public class DatabaseManager {
 	public ArrayList<AdvisingSchedule> getAdvisorSchedule(String name){
 		ArrayList<AdvisingSchedule> array = new ArrayList<AdvisingSchedule>();
 		try {
-			Connection conn = this.ConnectDB();
+			Connection conn = this.connectDB();
 			PreparedStatement statement;
 			if (name.equals("all")){
 			String command = "SELECT pname,advising_date,advising_starttime,advising_endtime,id FROM user,advising_schedule,advisor_settings "
@@ -209,7 +132,7 @@ public class DatabaseManager {
 		Boolean result = false;
 		int student_id = 0;
 		try{
-			Connection conn = this.ConnectDB();
+			Connection conn = this.connectDB();
 			PreparedStatement statement;
 			String command = "SELECT userid from user where email=?";
 			statement=conn.prepareStatement(command);
@@ -242,8 +165,8 @@ public class DatabaseManager {
 					statement.setInt(1,Integer.parseInt(studentid));
 					statement.setInt(2, id);
 					statement.executeUpdate();
+					result = true;
 				}
-				result = true;
 			}
 		}
 		catch(Exception e){
@@ -255,7 +178,7 @@ public class DatabaseManager {
 	public ArrayList<Appointment> getAppointments(String email, int role){
 		ArrayList<Appointment> appointments = new ArrayList<Appointment>();
 		try{
-			Connection conn = this.ConnectDB();
+			Connection conn = this.connectDB();
 			PreparedStatement statement;
 			String command = "";
 			switch (role){
@@ -269,7 +192,7 @@ public class DatabaseManager {
 				break;
 			case 3:
 				command = "SELECT advisor_settings.pname,advisor_settings.email,advising_date,advising_starttime,advising_endtime,appointment_type,id FROM APPOINTMENTS,ADVISOR_SETTINGS "
-						+"WHERE 1=1";
+						+"WHERE advisor_settings.userid=appointments.userid";
 				break;
 			case 4:
 				break;
@@ -302,7 +225,7 @@ public class DatabaseManager {
 	public Boolean cancelAppointment(int id){
 		Boolean result = false;
 		try{
-			Connection conn = this.ConnectDB();
+			Connection conn = this.connectDB();
 			PreparedStatement statement;
 			String command = "SELECT count(*) from appointments where id=?";
 			statement=conn.prepareStatement(command);
@@ -318,8 +241,9 @@ public class DatabaseManager {
 					statement=conn.prepareStatement(command);
 					statement.setInt(1, id);
 					statement.executeUpdate();
+					result = true;
 				}
-			result = true;
+			conn.close();
 			}
 		}
 		catch(SQLException e){

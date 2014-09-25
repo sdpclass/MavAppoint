@@ -11,12 +11,14 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import uta.mav.appoint.beans.AdvisingSchedule;
+import uta.mav.appoint.db.DatabaseManager;
+import uta.mav.appoint.helpers.LoginInterface;
 
 /**
  * Servlet implementation class AdvisingServlet
  */
 @WebServlet("/AdvisingServlet")
-public class AdvisingServlet extends HttpServlet {
+public class AdvisingServlet extends HttpServlet implements LoginInterface{
 	private static final long serialVersionUID = 1L;
 	HttpSession session;
 	String header;
@@ -29,15 +31,15 @@ public class AdvisingServlet extends HttpServlet {
 		if (role != null){
 			try{
 					//must be logged in to see advisor schedules - safety concern
-					ArrayList<String> array = DatabaseManager.getInstance().getAdvisors();
+					DatabaseManager dbm = new DatabaseManager();
+					ArrayList<String> array =  dbm.getAdvisors();
 					if (array.size() != 0){
 						session.setAttribute("advisors", array);
 					}
 					else{
 						//no advisors for department?
 					}
-					ArrayList<AdvisingSchedule> schedules = DatabaseManager.getInstance().getAdvisorSchedule("all");
-					System.out.printf("%d",schedules.size());
+					ArrayList<AdvisingSchedule> schedules = dbm.getAdvisorSchedule("all");
 					if (schedules.size() != 0){
 						session.setAttribute("schedules", schedules);
 					}
@@ -45,24 +47,13 @@ public class AdvisingServlet extends HttpServlet {
 			catch(Exception e){
 				
 			}
-			if (role.equals("1")){
-				header = "templates/advisor_header.jsp";
-				}
-			if (role.equals("2")){
-				header = "templates/student_header.jsp";
-				}
-			if (role.equals("3")){
-				header = "templates/admin_header.jsp";
-				}
-			if (role.equals("4")){
-				header = "templates/faculty_header.jsp";
-				}
-			
 		}
-		else{
-			header = "templates/header.jsp";
+		try{
+			header = displayHeader(Integer.parseInt(role));
 		}
-		
+		catch(NumberFormatException e){
+			header = displayHeader(0);
+		}
 		request.setAttribute("includeHeader", header);
 		request.getRequestDispatcher("/WEB-INF/jsp/views/advising.jsp").forward(request, response);
 	}
@@ -74,7 +65,8 @@ public class AdvisingServlet extends HttpServlet {
 		if (role != null){
 			try{
 					//must be logged in to see advisor schedules - safety concern
-					ArrayList<String> array = DatabaseManager.getInstance().getAdvisors();
+					DatabaseManager dbm = new DatabaseManager();
+					ArrayList<String> array = dbm.getAdvisors(); 
 					if (array.size() != 0){
 						session.setAttribute("advisors", array);
 					}
@@ -85,32 +77,42 @@ public class AdvisingServlet extends HttpServlet {
 					//get advisor schedules
 					String advisor = request.getParameter("advisor_button");
 					if (advisor != null){
-						ArrayList<AdvisingSchedule> schedule = DatabaseManager.getInstance().getAdvisorSchedule(advisor);
+						ArrayList<AdvisingSchedule> schedule = dbm.getAdvisorSchedule(advisor);
 					}
 			}
 			catch(Exception e){
 				
 			}
-			if (role.equals("1")){
-				header = "templates/advisor_header.jsp";
-				}
-			if (role.equals("2")){
-				header = "templates/student_header.jsp";
-				}
-			if (role.equals("3")){
-				header = "templates/admin_header.jsp";
-				}
-			if (role.equals("4")){
-				header = "templates/faculty_header.jsp";
-				}
-			
 		}
-		else{
-			header = "templates/header.jsp";
-		}
-		
+			try{
+				header = displayHeader(Integer.parseInt(role));
+			}
+			catch(NumberFormatException e){
+				header = displayHeader(0);
+			}
 		request.setAttribute("includeHeader", header);
 		request.getRequestDispatcher("/WEB-INF/jsp/views/advising.jsp").forward(request, response);
 	}
-
+	
+	@Override
+	public String displayHeader(int role){
+			String header;
+			switch (role){
+			case 1:
+				header = "templates/advisor_header.jsp";
+				break;
+			case 2:
+				header = "templates/student_header.jsp";
+				break;
+			case 3:
+				header = "templates/admin_header.jsp";
+				break;
+			case 4:
+				header = "templates/faculty_header.jsp";
+				break;
+			default:
+				header = "templates/header.jsp";
+		}
+			return header;
+	}
 }
