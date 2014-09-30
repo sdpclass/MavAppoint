@@ -8,6 +8,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import uta.mav.appoint.beans.GetSet;
 import uta.mav.appoint.db.DatabaseManager;
 
 /**

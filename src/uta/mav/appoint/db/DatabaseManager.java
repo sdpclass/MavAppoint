@@ -1,15 +1,16 @@
 package uta.mav.appoint.db;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
-import uta.mav.appoint.GetSet;
 import uta.mav.appoint.beans.AdvisingSchedule;
+import uta.mav.appoint.beans.AllocateTime;
 import uta.mav.appoint.beans.Appointment;
+import uta.mav.appoint.beans.GetSet;
+import uta.mav.appoint.login.AdminUser;
+import uta.mav.appoint.login.AdvisorUser;
+import uta.mav.appoint.login.LoginUser;
+import uta.mav.appoint.login.StudentUser;
 
 
 public class DatabaseManager {
@@ -18,7 +19,7 @@ public class DatabaseManager {
 			
 	//user login checking, check username and password against database
 	//then return role if a match is found
-	public int checkUser(GetSet set) throws SQLException{
+	public LoginUser checkUser(GetSet set) throws SQLException{
 		return imp.checkUser(set);
 		}
 	
@@ -38,12 +39,26 @@ public class DatabaseManager {
 		return imp.createAppointment(id, studentid, type, email);
 	}
 
-	public ArrayList<Appointment> getAppointments(String email, int role) throws SQLException{
-		return imp.getAppointments(email, role);
+	public ArrayList<Appointment> getAppointments(LoginUser user) throws SQLException{
+		if (user instanceof AdvisorUser){
+			return imp.getAppointments((AdvisorUser)user);
+		}
+		else if (user instanceof StudentUser){
+			return imp.getAppointments((StudentUser)user);
+		}
+		else if (user instanceof AdminUser){
+			return imp.getAppointments((AdminUser)user);
+		}
+		else
+			return null;
 	}
 
 	public Boolean cancelAppointment(int id) throws SQLException{
 		return imp.cancelAppointment(id);
+	}
+	
+	public Boolean addTimeSlot(AllocateTime at) throws SQLException{
+		return imp.addTimeSlot(at);
 	}
 }
 

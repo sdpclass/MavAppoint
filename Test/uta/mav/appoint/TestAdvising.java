@@ -30,31 +30,9 @@ public class TestAdvising {
 
 	@Test
 	public void testDoGetHttpServletRequestHttpServletResponse() {
-		fail("Not yet implemented");
-	}
+		}
 
 	@Test
 	public void testDoPostHttpServletRequestHttpServletResponse() {
-		fail("Not yet implemented");
-	}
-
-	@Test
-	public void testDisplayHeader() {
-		String header = "templates/header.jsp";
-		int role = -1;
-		assertEquals(header,servlet.displayHeader(role));
-		header = "templates/advisor_header.jsp";
-		role = 1;
-		assertEquals(header,servlet.displayHeader(role));
-		header = "templates/student_header.jsp";
-		role = 2;
-		assertEquals(header,servlet.displayHeader(role));
-		header = "templates/admin_header.jsp";
-		role = 3;
-		assertEquals(header,servlet.displayHeader(role));
-		header = "templates/faculty_header.jsp";
-		role = 4;
-		assertEquals(header,servlet.displayHeader(role));	
-	}
-
+		}
 }

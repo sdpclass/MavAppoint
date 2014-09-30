@@ -12,13 +12,13 @@ import javax.servlet.http.HttpSession;
 
 import uta.mav.appoint.beans.Appointment;
 import uta.mav.appoint.db.DatabaseManager;
-import uta.mav.appoint.helpers.LoginInterface;
+import uta.mav.appoint.login.LoginUser;
 
 /**
  * Servlet implementation class ViewAppointmentServlet
  */
 @WebServlet("/ViewAppointmentServlet")
-public class ViewAppointmentServlet extends HttpServlet implements LoginInterface{
+public class ViewAppointmentServlet extends HttpServlet{
 	private static final long serialVersionUID = 1L;
     HttpSession session;   
     String header;
@@ -35,12 +35,12 @@ public class ViewAppointmentServlet extends HttpServlet implements LoginInterfac
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		session = request.getSession();
-		String role = (String)session.getAttribute("role");
-		String header = "";
-		if (role != null){
+		LoginUser user = (LoginUser)session.getAttribute("user");
+		if (user != null){
 			try{
+				header = "templates/" + user.getHeader() + ".jsp";
 				DatabaseManager dbm = new DatabaseManager();
-				ArrayList<Appointment> appointments = dbm.getAppointments(session.getAttribute("emailAddress").toString(),Integer.parseInt(session.getAttribute("role").toString()));
+				ArrayList<Appointment> appointments = dbm.getAppointments(user);
 				if (appointments.size() != 0&&appointments != null){
 					session.setAttribute("appointments", appointments);
 				}
@@ -49,12 +49,10 @@ public class ViewAppointmentServlet extends HttpServlet implements LoginInterfac
 				System.out.printf(e.toString());
 			}
 		}
-		try{
-			header = displayHeader(Integer.parseInt(role));
+		else{
+			header = "templates/header.jsp";
 		}
-		catch(NumberFormatException e){
-			header = displayHeader(0);
-		}
+		
 		request.setAttribute("includeHeader", header);
 		request.getRequestDispatcher("/WEB-INF/jsp/views/view_appointments.jsp").forward(request, response);
 	}
@@ -80,26 +78,5 @@ public class ViewAppointmentServlet extends HttpServlet implements LoginInterfac
 			System.out.printf(e.toString());
 		}
 	}
-	
-@Override
-public String displayHeader(int role){
-		String header;
-		switch (role){
-		case 1:
-			header = "templates/advisor_header.jsp";
-			break;
-		case 2:
-			header = "templates/student_header.jsp";
-			break;
-		case 3:
-			header = "templates/admin_header.jsp";
-			break;
-		case 4:
-			header = "templates/faculty_header.jsp";
-			break;
-		default:
-			header = "templates/header.jsp";
-	}
-		return header;
-	}
+
 }

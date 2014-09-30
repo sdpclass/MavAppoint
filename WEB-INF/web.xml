@@ -73,4 +73,12 @@
       <servlet-name>ViewAppointmentServlet</servlet-name>
       <url-pattern>/appointments</url-pattern>
   </servlet-mapping>
+<servlet>
+      <servlet-name>AllocateTimeServlet</servlet-name>
+      <servlet-class>uta.mav.appoint.AllocateTimeServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+      <servlet-name>AllocateTimeServlet</servlet-name>
+      <url-pattern>/availability</url-pattern>
+  </servlet-mapping>
 </web-app>

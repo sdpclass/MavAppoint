@@ -1,7 +1,6 @@
 package uta.mav.appoint;
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
 
 import java.sql.Connection;
 import java.util.ArrayList;
@@ -13,7 +12,14 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import uta.mav.appoint.beans.AdvisingSchedule;
+import uta.mav.appoint.beans.Appointment;
+import uta.mav.appoint.beans.GetSet;
 import uta.mav.appoint.db.RDBImpl;
+import uta.mav.appoint.login.AdminUser;
+import uta.mav.appoint.login.AdvisorUser;
+import uta.mav.appoint.login.FacultyUser;
+import uta.mav.appoint.login.LoginUser;
+import uta.mav.appoint.login.StudentUser;
 
 
 public class TestRDBImpl {
@@ -47,23 +53,23 @@ public class TestRDBImpl {
 		try{
 			GetSet set = new GetSet();
 			//check invalid username
-			assertEquals(dbm.checkUser(set),0);
+			assertFalse(dbm.checkUser(set) instanceof LoginUser);
 			//check valid student
 			set.setEmailAddress("teststudent@mavs.uta.edu");
 			set.setPassword("test1234");
-			assertEquals(dbm.checkUser(set),2);
+			assertTrue(dbm.checkUser(set) instanceof StudentUser);
 			//check valid advisor
 			set.setEmailAddress("testadvisor@uta.edu");
 			set.setPassword("test1234");
-			assertEquals(dbm.checkUser(set),1);
+			assertTrue(dbm.checkUser(set) instanceof AdvisorUser);
 			//check valid admin
 			set.setEmailAddress("testadmin@uta.edu");
 			set.setPassword("test1234");
-			assertEquals(dbm.checkUser(set),3);
+			assertTrue(dbm.checkUser(set) instanceof AdminUser);
 			//check valid faculty
 			set.setEmailAddress("testfaculty@uta.edu");
 			set.setPassword("test1234");
-			assertEquals(dbm.checkUser(set),4);
+			assertTrue(dbm.checkUser(set) instanceof FacultyUser);
 			
 		}
 		catch(Exception e){
@@ -125,7 +131,18 @@ public class TestRDBImpl {
 
 	@Test
 	public void testGetAppointments() {
-		fail("Not yet implemented");
+		AdvisorUser user = new AdvisorUser("notanadvisor@uta.edu");
+		ArrayList<Appointment> array = dbm.getAppointments(user);
+		assertTrue(array.size() == 0);
+		user.setEmail("testadvisor@uta.edu");
+		array = dbm.getAppointments(user);
+		assertTrue(array.size() > 0);
+		StudentUser user2 = new StudentUser("teststudent@mavs.uta.edu");
+		array = dbm.getAppointments(user2);
+		assertTrue(array.size() > 0);
+		AdminUser user3 = new AdminUser("testadmin@uta.edu");
+		array = dbm.getAppointments(user3);
+		assertTrue(array.size() > 0);
 	}
 
 	@Test

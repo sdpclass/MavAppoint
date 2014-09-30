@@ -1,4 +1,4 @@
-package uta.mav.appoint;
+package uta.mav.appoint.beans;
 
 import java.io.Serializable;
 
