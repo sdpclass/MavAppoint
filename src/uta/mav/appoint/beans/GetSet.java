@@ -1,19 +1,26 @@
-package uta.mav.appoint;
+package uta.mav.appoint.beans;
+
+import java.io.Serializable;
+
 /******************************************
  * @author John
  * Basic dataset package. If you need to compare values against anything from
  * a sql table, add it as a variable here and use it to compare
  *
  */
-public class GetSet {
+public class GetSet implements Serializable{
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 7443811121055816372L;
 	private String password;
 	private String emailAddress;
 	private String studentId;
 	private String role;
 	private String name;
-	private int date;
-	private int starttime;
-	private int endtime;
+	private String date;
+	private String starttime;
+	private String endtime;
 	/**
 	 * @return the name
 	 */
@@ -29,37 +36,37 @@ public class GetSet {
 	/**
 	 * @return the date
 	 */
-	public int getDate() {
+	public String getDate() {
 		return date;
 	}
 	/**
 	 * @param date the date to set
 	 */
-	public void setDate(int date) {
+	public void setDate(String date) {
 		this.date = date;
 	}
 	/**
 	 * @return the starttime
 	 */
-	public int getStarttime() {
+	public String getStarttime() {
 		return starttime;
 	}
 	/**
 	 * @param starttime the starttime to set
 	 */
-	public void setStarttime(int starttime) {
+	public void setStarttime(String starttime) {
 		this.starttime = starttime;
 	}
 	/**
 	 * @return the endtime
 	 */
-	public int getEndtime() {
+	public String getEndtime() {
 		return endtime;
 	}
 	/**
 	 * @param endtime the endtime to set
 	 */
-	public void setEndtime(int endtime) {
+	public void setEndtime(String endtime) {
 		this.endtime = endtime;
 	}
 	/**

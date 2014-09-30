@@ -8,7 +8,8 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-public class TestDatabaseManager {
+public class TestAdvising {
+	AdvisingServlet servlet;
 
 	@BeforeClass
 	public static void setUpBeforeClass() throws Exception {
@@ -20,6 +21,7 @@ public class TestDatabaseManager {
 
 	@Before
 	public void setUp() throws Exception {
+		servlet = new AdvisingServlet();
 	}
 
 	@After
@@ -27,23 +29,10 @@ public class TestDatabaseManager {
 	}
 
 	@Test
-	public void testDatabaseManager() {
-		fail("Not yet implemented");
-	}
+	public void testDoGetHttpServletRequestHttpServletResponse() {
+		}
 
 	@Test
-	public void testConnectDB() {
-		fail("Not yet implemented");
-	}
-
-	@Test
-	public void testCheckUser() {
-		fail("Not yet implemented");
-	}
-
-	@Test
-	public void testAddUser() {
-		fail("Not yet implemented");
-	}
-
+	public void testDoPostHttpServletRequestHttpServletResponse() {
+		}
 }

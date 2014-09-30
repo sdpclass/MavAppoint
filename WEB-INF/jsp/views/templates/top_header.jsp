@@ -8,6 +8,7 @@
 	<meta charset="UTF-8">
 
 	<link rel="stylesheet" href="components/bootstrap3/css/bootstrap.min.css">
+	<link rel="stylesheet" href="components/bootstrap3/css/bootstrap-datetimepicker.min.css">
 	<link rel="stylesheet" href="css/fullcalendar.css">
 	
 	<script type="text/javascript" src="components/jquery/jquery.min.js"></script>
@@ -16,6 +17,7 @@
 	<script type="text/javascript" src="components/jstimezonedetect/jstz.min.js"></script>
 	<script type="text/javascript" src="js/lib/moment.min.js"></script>
 	<script type="text/javascript" src="js/fullcalendar.js"></script>
+	<script type="text/javascript" src="components/bootstrap3/js/bootstrap-datetimepicker.min.js"></script>
 	
 </head>
 <body>

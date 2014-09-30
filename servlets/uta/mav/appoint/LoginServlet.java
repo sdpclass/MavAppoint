@@ -9,6 +9,10 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import uta.mav.appoint.beans.GetSet;
+import uta.mav.appoint.db.DatabaseManager;
+import uta.mav.appoint.login.LoginUser;
+
 /**
  * Servlet implementation class LoginServlet
  */
@@ -37,9 +41,10 @@ public class LoginServlet extends HttpServlet {
 		try{
 			//call db manager and authenticate user, return value will be 0 or
 			//an integer indicating a role
-			int check = DatabaseManager.getInstance().CheckUser(sets);
-			if(check != 0){
-				setSession(emailAddress,check);
+			DatabaseManager dbm = new DatabaseManager();
+			LoginUser user = dbm.checkUser(sets);
+			if(user != null){
+				session.setAttribute("user", user);
 				response.sendRedirect("index");
 			}
 			else{
@@ -51,11 +56,5 @@ public class LoginServlet extends HttpServlet {
 		catch(Exception e){
 			response.sendRedirect("login");
 		}
-	}
-	
-	//set session attributes, email and role
-	void setSession(String email, int role){
-		session.setAttribute("emailAddress", email);
-		session.setAttribute("role", "" + role);
 	}
 }
