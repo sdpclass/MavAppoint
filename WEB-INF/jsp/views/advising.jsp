@@ -24,22 +24,22 @@
 		<div class="pull-right form-inline">
 			<div class="btn-group">
 				 	<form action="advising" method="post" name="advisor_form">
-				 	<input type=hidden name=advisor_button>
+				 	<input type=hidden name=advisor_button id="advisor_button">
 		    		<%@ page import= "java.util.ArrayList" %>
 		    		
 		    		<!-- begin processing advisors  -->
 		    		<% ArrayList<String> array = (ArrayList<String>)session.getAttribute("advisors");
 		    			if (array != null){ %>
-		    				<button class="btn btn-warning" id=all onclick="all()">All</button>
-		    				<script> function all(){
-		    							document.advisor_button.value = "all";
+		    				<button type="button" id="all1" onclick="alladvisors()">All</button>
+		    				<script> function alladvisors(){
+		    							document.getElementById("advisor_button").value = "all";
 		    							advisor_form.submit();
 		    						 }
 		    				</script>
 		    			<%	for (int i=0;i<array.size();i++){ %>
-		    					<button class="btn btn-warning" id=button<%=i%> onclick="button<%=i%>()"><%=array.get(i)%></button>
+		    					<button type="button" id="button1<%=i%>" onclick="button<%=i%>()"><%=array.get(i)%></button>
 								<script> function button<%=i%>(){
-										document.advisor_button.value = "button <%=i%>"
+										document.getElementById("advisor_button").value = "<%=array.get(i)%>";
 										advisor_form.submit();
 								}</script>
 						<%	}
@@ -62,9 +62,13 @@
 	<br/>
 	
 			<div id='calendar'></div>
+		<%@ page import= "uta.mav.appoint.TimeSlotComponent" %>
+		<%@ page import= "uta.mav.appoint.PrimitiveTimeSlot" %>
+		<%@ page import= "uta.mav.appoint.CompositeTimeSlot" %>
 		<%@ page import= "uta.mav.appoint.beans.AdvisingSchedule" %>
+		
 		<!--  begin processing schedules -->
-		<% ArrayList<AdvisingSchedule> schedules = (ArrayList<AdvisingSchedule>)session.getAttribute("schedules");
+		<% ArrayList<TimeSlotComponent> schedules = (ArrayList<TimeSlotComponent>)session.getAttribute("schedules");
 		    			if (schedules != null){%>
 		    				<script>
 		    				$(document).ready(function(){
@@ -74,6 +78,11 @@
 		    							right: 'today, prev,next',
 		    							center: 'title'
 		    						},
+		    						displayEventEnd : {
+		    							month: true,
+		    							basicWeek: true,
+		    							'default' : true,
+		    						},
 		    						eventClick: function(event,element){
 		    							window.open("schedule?id="+event.id,"_self");
 		    						},
@@ -82,10 +91,10 @@
 									for (i=0;i<schedules.size();i++){
 		 						%> 
 		 							{
-		 								title:'Advising',
-		 								start:'<%=schedules.get(i).getDate()+"T"+schedules.get(i).getStarttime()%>',
-		 								end:'<%=schedules.get(i).getDate()+"T"+schedules.get(i).getEndtime()%>',
-		 								id:<%=schedules.get(i).getUniqueid()%>
+		 								title:'<%=schedules.get(i).getName()%>',
+		 								start:'<%=schedules.get(i).getDate()+"T"+schedules.get(i).getStartTime()%>',
+		 								end:'<%=schedules.get(i).getDate()+"T"+schedules.get(i).getEndTime()%>',
+		 								id:<%=i%>
 		 							}<%if(i != (schedules.size()-1)){%>,<%}%>
 		 					 <%}%>	]
 		    					});

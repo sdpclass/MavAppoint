@@ -26,6 +26,9 @@ public class ScheduleAppointmentServlet extends HttpServlet{
 		if (user != null){
 			try{
 				header = "templates/" + user.getHeader() + ".jsp";
+				int id = Integer.parseInt(request.getParameter("id"));
+				ArrayList<TimeSlotComponent> array = (ArrayList<TimeSlotComponent>)session.getAttribute("schedules");
+				session.setAttribute("timeslot", array.get(id));
 			}
 			catch(Exception e){
 				
@@ -34,6 +37,7 @@ public class ScheduleAppointmentServlet extends HttpServlet{
 		else{
 			header = "templates/header.jsp";
 		}
+		
 		request.setAttribute("includeHeader", header);
 		request.getRequestDispatcher("/WEB-INF/jsp/views/schedule_appointment.jsp").forward(request, response);
 	}
@@ -44,7 +48,7 @@ public class ScheduleAppointmentServlet extends HttpServlet{
 		try{
 		int id = Integer.parseInt(request.getParameter("id"));
 		String studentid = request.getParameter("studentid");
-		String type = request.getParameter("type");
+		String type = request.getParameter("appointmenttype");
 		String email = ((LoginUser)session.getAttribute("user")).getEmail();
 		DatabaseManager dbm = new DatabaseManager();
 		Boolean result = dbm.createAppointment(id,studentid,type,email);

@@ -40,7 +40,7 @@ public class AdvisingServlet extends HttpServlet{
 					else{
 						//no advisors for department?
 					}
-					ArrayList<AdvisingSchedule> schedules = dbm.getAdvisorSchedule("all");
+					ArrayList<TimeSlotComponent> schedules = dbm.getAdvisorSchedule("all");
 					if (schedules.size() != 0){
 						session.setAttribute("schedules", schedules);
 					}
@@ -70,17 +70,24 @@ public class AdvisingServlet extends HttpServlet{
 						session.setAttribute("advisors", array);
 					}					
 					//get advisor schedules
-					String advisor = request.getParameter("advisor_button");
+					String advisor = (String)request.getParameter("advisor_button");
+					ArrayList<TimeSlotComponent> schedule;
 					if (advisor != null){
-						ArrayList<AdvisingSchedule> schedule = dbm.getAdvisorSchedule(advisor);
+						schedule = dbm.getAdvisorSchedule(advisor);
 					}
 					else{
-						ArrayList<AdvisingSchedule> schedule = dbm.getAdvisorSchedule("all");
+						schedule = dbm.getAdvisorSchedule("all");
+					}
+					if (schedule.size() != 0){
+						session.setAttribute("schedules", schedule);
 					}
 				}
 			catch(Exception e){
-				
+				System.out.printf(e.toString());
 			}
+		}
+		else{
+			header = "templates/header.jsp";
 		}
 		request.setAttribute("includeHeader", header);
 		request.getRequestDispatcher("/WEB-INF/jsp/views/advising.jsp").forward(request, response);

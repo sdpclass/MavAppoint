@@ -97,7 +97,7 @@ public class TestRDBImpl {
 	public void testGetAdvisorSchedule() {
 		try{
 			//test all advisors
-			ArrayList<AdvisingSchedule> array = dbm.getAdvisorSchedule("all");
+			ArrayList<TimeSlotComponent> array = dbm.getAdvisorSchedule("all");
 			assertTrue(array.size() > 0); //assumes at least one open advising slot
 			/*ArrayList<String> advisors = dbm.getAdvisors(); //get list of advisors
 			for (int i=0;i<advisors.size();i++){
@@ -116,7 +116,7 @@ public class TestRDBImpl {
 	@Test
 	public void testCreateAppointment() {
 		//test all inputs invalid
-		int id = -1;
+		int id = -2;
 		String studentid = "0";
 		String type = "";
 		String email = "teststudent@mavs.uta.edu";
@@ -147,7 +147,7 @@ public class TestRDBImpl {
 
 	@Test
 	public void testCancelAppointment() {
-		int id = -1;
+		int id = -2;
 		assertTrue(dbm.cancelAppointment(id) == false);
 		id = 10;
 		assertTrue(dbm.cancelAppointment(id) == true);

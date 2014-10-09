@@ -6,27 +6,23 @@ public class PrimitiveTimeSlot extends TimeSlotComponent{
 	private String starttime;
 	private String endtime;
 	private int uniqueid;
-	/**
-	 * @return the name
-	 */
-	public String getName() {
-		return name;
+	
+	@Override
+	public String getName(){
+		return this.name;
 	}
-	/**
-	 * @param name the name to set
-	 */
-	public void setName(String name) {
+	
+	@Override 
+	public void setName(String name){
 		this.name = name;
 	}
-	/**
-	 * @return the date
-	 */
+	
+	@Override
 	public String getDate() {
 		return date;
 	}
-	/**
-	 * @param date the date to set
-	 */
+	
+	@Override
 	public void setDate(String date) {
 		this.date = date;
 	}
@@ -37,37 +33,40 @@ public class PrimitiveTimeSlot extends TimeSlotComponent{
 	public String getStartTime() {
 		return starttime;
 	}
-	/**
-	 * @param starttime the starttime to set
-	 */
-	public void setStarttime(String starttime) {
+	
+	@Override
+	public void setStartTime(String starttime) {
 		this.starttime = starttime;
 	}
-	/**
-	 * @return the endtime
-	 */
+	
 	@Override
 	public String getEndTime() {
 		return endtime;
 	}
-	/**
-	 * @param endtime the endtime to set
-	 */
-	public void setEndtime(String endtime) {
+	
+	@Override
+	public void setEndTime(String endtime) {
 		this.endtime = endtime;
 	}
-	/**
-	 * @return the uniqueid
-	 */
-	public int getUniqueid() {
+	
+	
+	@Override
+	public int getUniqueId() {
 		return uniqueid;
 	}
-	/**
-	 * @param uniqueid the uniqueid to set
-	 */
-	public void setUniqueid(int uniqueid) {
+	
+	@Override
+	public void setUniqueId(int uniqueid) {
 		this.uniqueid = uniqueid;
 	}
 	
-	
+	@Override
+	public String getEvent(int m){
+	return "{\n"
+			+	"title:\'Available\',\n"
+			+	"start:\'"+this.getDate()+"T"+this.getStartTime()+"\',\n"
+			+	"end:\'"+this.getDate()+"T"+this.getEndTime()+"\',\n"
+			+	"id:"+this.getUniqueId()+",\n"
+			+"}\n";
+	}
 }

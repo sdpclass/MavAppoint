@@ -3,7 +3,7 @@ package uta.mav.appoint.db;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
-import uta.mav.appoint.beans.AdvisingSchedule;
+import uta.mav.appoint.TimeSlotComponent;
 import uta.mav.appoint.beans.AllocateTime;
 import uta.mav.appoint.beans.Appointment;
 import uta.mav.appoint.beans.GetSet;
@@ -31,7 +31,7 @@ public class DatabaseManager {
 		return imp.getAdvisors();
 	}
 	
-	public ArrayList<AdvisingSchedule> getAdvisorSchedule(String name) throws SQLException{
+	public ArrayList<TimeSlotComponent> getAdvisorSchedule(String name) throws SQLException{
 		return imp.getAdvisorSchedule(name);
 	}
 

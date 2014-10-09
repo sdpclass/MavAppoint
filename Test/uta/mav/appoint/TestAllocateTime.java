@@ -25,22 +25,4 @@ public class TestAllocateTime {
 	@After
 	public void tearDown() throws Exception {
 	}
-
-	@Test
-	public void testCountTimeSlots() {
-		String testStartTime = "9:00";
-		String testEndTime = "9:15";
-		AllocateTimeServlet ats = new AllocateTimeServlet();
-		int result = ats.countTimeSlots(testStartTime, testEndTime);
-		assertEquals(result,3);
-		testEndTime = "10:15";
-		result = ats.countTimeSlots(testStartTime, testEndTime);
-		assertEquals(result,15);
-		testEndTime = "11:15";
-		result = ats.countTimeSlots(testStartTime, testEndTime);
-		assertEquals(result,27);
-	
-	
-	}
-
 }

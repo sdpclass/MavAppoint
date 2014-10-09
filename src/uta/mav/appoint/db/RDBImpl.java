@@ -7,10 +7,13 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
-import uta.mav.appoint.beans.AdvisingSchedule;
+import uta.mav.appoint.PrimitiveTimeSlot;
+import uta.mav.appoint.TimeSlotComponent;
 import uta.mav.appoint.beans.AllocateTime;
 import uta.mav.appoint.beans.Appointment;
 import uta.mav.appoint.beans.GetSet;
+import uta.mav.appoint.flyweight.TimeSlotFlyweightFactory;
+import uta.mav.appoint.helpers.TimeSlotHelpers;
 import uta.mav.appoint.login.AdminUser;
 import uta.mav.appoint.login.AdvisorUser;
 import uta.mav.appoint.login.FacultyUser;
@@ -100,8 +103,8 @@ public class RDBImpl implements DBImplInterface{
 		return arraylist;
 	}
 	
-	public ArrayList<AdvisingSchedule> getAdvisorSchedule(String name){
-		ArrayList<AdvisingSchedule> array = new ArrayList<AdvisingSchedule>();
+	public ArrayList<TimeSlotComponent> getAdvisorSchedule(String name){
+		ArrayList<TimeSlotComponent> array = new ArrayList<TimeSlotComponent>();
 		try {
 			Connection conn = this.connectDB();
 			PreparedStatement statement;
@@ -112,21 +115,23 @@ public class RDBImpl implements DBImplInterface{
 			}
 			else{
 				String command = "SELECT pname,advising_date,advising_starttime,advising_endtime,id FROM USER,ADVISING_SCHEDULE,ADVISOR_SETTINGS "
-								+ "WHERE USER.userid=ADVISOR_SETTINGS.userid AND USER.userid=ADVISING_SCHEDULE.userid AND ADVISOR_SETTINGS.pname=? AND studentid is null";
+								+ "WHERE USER.userid=ADVISOR_SETTINGS.userid AND USER.userid=ADVISING_SCHEDULE.userid AND USER.userid=ADVISING_SCHEDULE.userid AND ADVISOR_SETTINGS.pname=? AND studentid is null";
 				statement = conn.prepareStatement(command);
 				statement.setString(1,name);
-				statement.setString(2,null);
 				}
+			
 			ResultSet res = statement.executeQuery();
 			while(res.next()){
-				AdvisingSchedule set = new AdvisingSchedule();
+				//Use flyweight factory to avoid build cost if possible
+				PrimitiveTimeSlot set = (PrimitiveTimeSlot)TimeSlotFlyweightFactory.getInstance().getFlyweight(res.getString(2),res.getString(3));
 				set.setName(res.getString(1));
 				set.setDate(res.getString(2));
-				set.setStarttime(res.getString(3));
-				set.setEndtime(res.getString(4));
-				set.setUniqueid(res.getInt(5));
+				set.setStartTime(res.getString(3));
+				set.setEndTime(res.getString(4));
+				set.setUniqueId(res.getInt(5));
 				array.add(set);
 			}
+			array = TimeSlotHelpers.createCompositeTimeSlot(array);
 			conn.close();
 		}
 		catch(Exception e){
@@ -304,6 +309,7 @@ public class RDBImpl implements DBImplInterface{
 	public Boolean addTimeSlot(AllocateTime at){
 		Boolean result = false;
 		int userid = 0;
+		int count = TimeSlotHelpers.count(at.getStartTime(),at.getEndTime());
 		try{
 			Connection conn = this.connectDB();
 			PreparedStatement statement;
@@ -321,15 +327,37 @@ public class RDBImpl implements DBImplInterface{
 		}
 		try{
 			Connection conn = this.connectDB();
-			System.out.printf("%s %s %s %s\n",at.getDate(),at.getStartTime(),at.getEndTime(),at.getEmail());
+			PreparedStatement statement;
+			String command = "SELECT COUNT(*) FROM  ADVISING_SCHEDULE WHERE advising_date=? AND advising_starttime >=? AND advising_endtime <=? AND userid=?";
+			statement = conn.prepareStatement(command);
+				statement.setString(1,at.getDate());
+				statement.setString(2,at.getStartTime());
+				statement.setString(3,at.getEndTime());
+				statement.setInt(4,userid);
+				ResultSet rs = statement.executeQuery();
+			while(rs.next()){
+				if (rs.getInt(1)>=1){
+					System.out.printf(""+rs.getInt(1));
+					result = false;
+					return result;
+				}
+			}
+		}
+		catch(Exception e){
+			
+		}
+		try{
+			Connection conn = this.connectDB();
 			PreparedStatement statement;
 			String command = "INSERT INTO ADVISING_SCHEDULE (advising_date,advising_starttime,advising_endtime,studentid,userid) VALUES(?,?,?,null,?)";
-			statement=conn.prepareStatement(command);
-			statement.setString(1,at.getDate());
-			statement.setString(2,at.getStartTime());
-			statement.setString(3,at.getEndTime());
-			statement.setInt(4,userid);
-			statement.executeUpdate();
+			statement = conn.prepareStatement(command);
+			for (int i=0;i<count;i++){
+				statement.setString(1,at.getDate());
+				statement.setString(2,TimeSlotHelpers.add(at.getStartTime(),i));
+				statement.setString(3,TimeSlotHelpers.add(at.getStartTime(),i+1));
+				statement.setInt(4,userid);
+				statement.executeUpdate();
+			}
 			result = true;
 			conn.close();
 		}
