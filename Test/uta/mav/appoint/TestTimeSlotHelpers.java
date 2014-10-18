@@ -68,7 +68,7 @@ public class TestTimeSlotHelpers {
 		ts.setEndTime("9:05");
 		ts.setUniqueId(1);
 		ts.setDate("2014-10-10");
-		ts2.setName("test2");
+		ts2.setName("test");
 		ts2.setStartTime("9:05");
 		ts2.setEndTime("9:10");
 		ts2.setUniqueId(2);
@@ -78,12 +78,12 @@ public class TestTimeSlotHelpers {
 		ts3.setEndTime("9:15");
 		ts3.setUniqueId(3);
 		ts3.setDate("2014-10-10");
-		ts4.setName("test2");
+		ts4.setName("test");
 		ts4.setStartTime("10:00");
 		ts4.setEndTime("10:05");
 		ts4.setUniqueId(4);
 		ts4.setDate("2014-10-10");
-		ts5.setName("test2");
+		ts5.setName("test");
 		ts5.setStartTime("10:05");
 		ts5.setEndTime("10:10");
 		ts5.setUniqueId(5);
@@ -97,9 +97,12 @@ public class TestTimeSlotHelpers {
 		
 		ArrayList<TimeSlotComponent> array2 = TimeSlotHelpers.createCompositeTimeSlot(array);
 		assertEquals(array2.get(0).getStartTime(),"9:00");
-		assertEquals(array2.get(0).getEndTime(),"9:15");
-		assertEquals(array2.get(1).getStartTime(),"10:00");
-		assertEquals(array2.get(1).getEndTime(),"10:10");
+		assertEquals(array2.get(0).getEndTime(),"9:10");
+		assertEquals(array2.get(1).getStartTime(),"9:10");
+		assertEquals(array2.get(1).getEndTime(),"9:15");
+		assertEquals(array2.get(2).getStartTime(),"10:00");
+		assertEquals(array2.get(2).getEndTime(),"10:10");
+		
 		
 	}
 

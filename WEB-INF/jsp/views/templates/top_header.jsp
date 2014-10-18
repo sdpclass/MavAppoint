@@ -18,7 +18,10 @@
 	<script type="text/javascript" src="js/lib/moment.min.js"></script>
 	<script type="text/javascript" src="js/fullcalendar.js"></script>
 	<script type="text/javascript" src="components/bootstrap3/js/bootstrap-datetimepicker.min.js"></script>
-	
+	<style>
+	body {background-color:#A9BED1}
+	.inversenavbar {background-color:blue}
+	</style>
 </head>
 <body>
 <div class="container">
@@ -31,7 +34,7 @@
 		</div>
 	</nav>
 	<nav class="navbar navbar-inverse">
-		<div class="container-fluid">
+		<div id="inversenavbar" class="container-fluid">
 			<div class="navbar-header">
 				<a class="navbar-brand" href="#"> Maverick Appointments</a>
 			</div>

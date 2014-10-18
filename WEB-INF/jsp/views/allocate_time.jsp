@@ -19,7 +19,7 @@
 		 placeholder="yyyy-MM-dd">
 		</div>
 		<div class="form-group">
-		<label for="Repeat">Duration of Repeat:</label>
+		<label for="Repeat">Weekly repeat duration:</label>
 		<input type="text" class="form-control" name=Repeat
 		value="0">
 		</div>

@@ -143,16 +143,20 @@ public class TimeSlotHelpers {
 			result = true;
 			for (int i=0;i<fin.size()-1;i++){
 				int k=i+1;
-				if ((fin.get(i).getEndTime().equals(fin.get(k).getStartTime()))){
+				if (fin.get(i).getEndTime().equals(fin.get(k).getStartTime())&&fin.get(i).getName().equals(fin.get(i+1).getName())){
 					result = false;
 					CompositeTimeSlot cts = new CompositeTimeSlot();
 					cts.add(fin.get(i));
+					int h=k;
 					while(cts.getEndTime().equals(fin.get(k).getStartTime())){
-						cts.add(fin.get(k));
+						if (fin.get(i).getName().equals(fin.get(k).getName())){ //don't group different user slots together
+							cts.add(fin.get(k));
+							h++;
+						}
 						if (++k == fin.size()) //prevent out of bounds exception
 							break;
 					}
-					for (int j=i+1;j<k;j++){
+					for (int j=i+1;j<h;j++){
 						fin.remove(i+1);
 					}
 					fin.set(i, cts);
