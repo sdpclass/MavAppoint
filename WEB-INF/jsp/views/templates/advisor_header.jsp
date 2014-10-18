@@ -5,6 +5,7 @@
 				<li><a href="availability"> Update Schedule </a></li>
 				<li><a href="appointments"> Appointments </a></li>
 				<li><a href="advising"> Show Schedule </a></li>
+				<li><a href="customize">Customize Settings</a></li>
 				</ul>
 				<ul class="nav navbar-nav navbar-right">
 				

@@ -11,8 +11,8 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import uta.mav.appoint.beans.AdvisingSchedule;
 import uta.mav.appoint.beans.Appointment;
+import uta.mav.appoint.beans.AppointmentType;
 import uta.mav.appoint.beans.GetSet;
 import uta.mav.appoint.db.RDBImpl;
 import uta.mav.appoint.login.AdminUser;
@@ -97,7 +97,7 @@ public class TestRDBImpl {
 	public void testGetAdvisorSchedule() {
 		try{
 			//test all advisors
-			ArrayList<AdvisingSchedule> array = dbm.getAdvisorSchedule("all");
+			ArrayList<TimeSlotComponent> array = dbm.getAdvisorSchedule("all");
 			assertTrue(array.size() > 0); //assumes at least one open advising slot
 			/*ArrayList<String> advisors = dbm.getAdvisors(); //get list of advisors
 			for (int i=0;i<advisors.size();i++){
@@ -114,19 +114,26 @@ public class TestRDBImpl {
 	}
 
 	@Test
-	public void testCreateAppointment() {
-		//test all inputs invalid
-		int id = -1;
+	public void testCreateAppointment() {//test all inputs invalid
 		String studentid = "0";
 		String type = "";
 		String email = "teststudent@mavs.uta.edu";
-		assertTrue(dbm.createAppointment(id, studentid, type, email) == false);
+		String date = "2014-01-01";
+		String start = "12:00";
+		String end = "13:00"; 
+		String pname = "...";
+		int id = 0;
+		assertTrue(dbm.createAppointment(id,studentid,type,email,pname,date, start, end) == false);
 		//test success
-		id = 10;
 		studentid = "1234567890";
 		type = "Add Class";
 		email = "teststudent@mavs.uta.edu";
-		assertTrue(dbm.createAppointment(id, studentid, type, email) == true);
+		date = "2014-10-07";
+		start = "09:00";
+		end = "09:15";
+		id=10;
+		pname = "Test Adv 1";
+		assertTrue(dbm.createAppointment(id,studentid,type,email,pname,date, start, end) == true);
 	}
 
 	@Test
@@ -147,10 +154,19 @@ public class TestRDBImpl {
 
 	@Test
 	public void testCancelAppointment() {
-		int id = -1;
+		int id = -2;
 		assertTrue(dbm.cancelAppointment(id) == false);
 		id = 10;
 		assertTrue(dbm.cancelAppointment(id) == true);
+	}
+	
+	@Test
+	public void testGetAppointmentTypes(){
+		String pname = "Test Adv 1";
+		ArrayList<AppointmentType> ats = dbm.getAppointmentTypes(pname);
+		assertTrue(ats.get(0).getType().equals("Add Class"));
+		assertTrue(ats.get(1).getType().equals("Drop Class"));
+		assertTrue(ats.get(2).getType().equals("Transfer Student"));
 	}
 
 }

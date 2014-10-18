@@ -103,11 +103,7 @@ public class Appointment implements Serializable{
 	
 	@Override
 	public String toString(){
-		return	"<b>Advisor: </b>" + this.getPname()
-			+	"<b> Advising Date: </b>" + this.getAdvisingDate()
-			+	"<b> Advising Start: </b>" + this.getAdvisingStartTime()
-			+	"<b> Advising End: </b>" + this.getAdvisingEndTime()
-			+	"<b> Appointment Type: </b>" + this.getAppointmentType()
-			+	"<b> Advisor Email: </b>" + this.getAdvisorEmail();
+		return	String.format("%10s %10s %s %s %s %s",this.getPname(),this.getAdvisingDate(),this.getAdvisingStartTime(),
+				this.getAdvisingEndTime(),this.getAppointmentType(),this.getAdvisorEmail());
 	}
 }
