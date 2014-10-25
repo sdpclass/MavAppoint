@@ -1,4 +1,5 @@
 <jsp:include page='<%=(String) request.getAttribute("includeHeader")%>' />
+<div class="container">
 		<div class="input-group-btn">
 		<%@ page import= "uta.mav.appoint.beans.AppointmentType" %>
 		<% ArrayList<AppointmentType> ats = (ArrayList<AppointmentType>)session.getAttribute("appointmenttypes");
@@ -76,5 +77,6 @@
 		</div>
 	</div>
 	</form>
+</div>
 	
 <%@include file="templates/footer.jsp" %>
