@@ -52,25 +52,13 @@ public class ScheduleAppointmentServlet extends HttpServlet{
 		String studentid = request.getParameter("studentid");
 		String type = request.getParameter("apptype");
 		String pname = request.getParameter("pname");
+		int d = Integer.parseInt(request.getParameter("duration"));
 		String[] parts = (request.getParameter("start")).split(" ");
 		String date = parts[3] + "-" + convertDate(parts[1]) + "-" + parts[2];
 		parts = parts[4].split(":");
 		String start = parts[0] + ":" + parts[1];
-		parts = (request.getParameter("end")).split(" ");
-		parts = parts[4].split(":");
-		String end = parts[0] + ":" + parts[1];
+		String end = addTime(parts[0],parts[1],d);
 		String email = ((LoginUser)session.getAttribute("user")).getEmail();
-		System.out.println();
-		System.out.println(id);
-		System.out.println(studentid);
-		System.out.println(type);
-		System.out.println(pname);
-		System.out.println(date);
-		System.out.println(start);
-		System.out.println(end);
-		System.out.println(email);
-		System.out.println();
-		
 		
 		DatabaseManager dbm = new DatabaseManager();
 		Boolean result = dbm.createAppointment(id,studentid,type,email,pname,date, start, end);
@@ -87,6 +75,26 @@ public class ScheduleAppointmentServlet extends HttpServlet{
 		catch(Exception e){
 			System.out.printf(e.toString());
 		}
+	}
+	
+	public String addTime(String hour, String minute, int add){
+		String result = "";
+		try{
+		int h = Integer.parseInt(hour);
+		int m = Integer.parseInt(minute);
+		if (m + add > 60){
+			m = m+add-60;
+			h++;
+		}
+		else{
+			m = m+add;
+		}
+		result = h+":"+m;
+		}
+		catch(Exception e){
+			
+		}
+		return result;
 	}
 	
 	public String convertDate(String d){

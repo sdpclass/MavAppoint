@@ -34,6 +34,7 @@ public class IndexServlet extends HttpServlet{
 		else{
 			header = "templates/header.jsp";
 		}
+		
 		request.setAttribute("includeHeader", header);
 		request.getRequestDispatcher("/WEB-INF/jsp/views/index.jsp").forward(request, response);
 	}

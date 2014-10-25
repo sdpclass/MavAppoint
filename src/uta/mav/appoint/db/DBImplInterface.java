@@ -27,4 +27,6 @@ public interface DBImplInterface {
 	public Boolean addTimeSlot(AllocateTime at) throws SQLException;
 	public Connection connectDB();
 	public ArrayList<AppointmentType> getAppointmentTypes(String pname) throws SQLException;
+	public Boolean updateAppointment(Appointment a, String id);
+	
 }

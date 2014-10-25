@@ -65,4 +65,27 @@ public class CompositeTimeSlot extends TimeSlotComponent{
 		return cat;
 	}
 	
+	@Override
+	public void refactorTimeSlots(int m){
+		children = this.expandTimeSlots(children);
+		ArrayList<TimeSlotComponent> ts = null;
+		CompositeTimeSlot cts = null;
+		for (int i=0;i<children.size();i=i+m){
+			for (int j=i;j<i+m;j++){
+				cts = new CompositeTimeSlot();
+				cts.add(children.get(j));
+			}
+			ts.add(cts);
+		}
+		children = ts;
+	}
+	
+	@Override
+	public ArrayList<TimeSlotComponent> expandTimeSlots(ArrayList<TimeSlotComponent> ts){
+		for (int i=0;i<children.size();i++){
+			ts = children.get(i).expandTimeSlots(ts);
+		}
+		return ts;
+	
+	}
 }

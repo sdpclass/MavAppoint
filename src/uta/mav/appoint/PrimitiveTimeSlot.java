@@ -1,5 +1,7 @@
 package uta.mav.appoint;
 
+import java.util.ArrayList;
+
 public class PrimitiveTimeSlot extends TimeSlotComponent{
 	private String name;
 	private String date;
@@ -68,5 +70,12 @@ public class PrimitiveTimeSlot extends TimeSlotComponent{
 			+	"end:\'"+this.getDate()+"T"+this.getEndTime()+"\',\n"
 			+	"id:"+this.getUniqueId()+",\n"
 			+"}\n";
+	}
+	
+	@Override
+	public ArrayList<TimeSlotComponent> expandTimeSlots(ArrayList<TimeSlotComponent> ts){
+		ts.add(this);
+		return ts;
+	
 	}
 }

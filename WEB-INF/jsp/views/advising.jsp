@@ -66,9 +66,11 @@
 		<%@ page import= "uta.mav.appoint.PrimitiveTimeSlot" %>
 		<%@ page import= "uta.mav.appoint.CompositeTimeSlot" %>
 		<%@ page import= "uta.mav.appoint.beans.AdvisingSchedule" %>
+		<%@ page import= "uta.mav.appoint.beans.Appointment" %>
 		
 		<!--  begin processing schedules -->
 		<% ArrayList<TimeSlotComponent> schedules = (ArrayList<TimeSlotComponent>)session.getAttribute("schedules");
+		   ArrayList<Appointment> appointments = (ArrayList<Appointment>)session.getAttribute("appointments");
 		    			if (schedules != null){%>
 		    				<script>
 		    				$(document).ready(function(){
@@ -90,15 +92,29 @@
 		    						},
 		    					events: [
 		 		    		<% int i = 0;
-									for (i=0;i<schedules.size();i++){
-		 						%> 
-		 							{
-		 								title:'<%=schedules.get(i).getName()%>',
-		 								start:'<%=schedules.get(i).getDate()+"T"+schedules.get(i).getStartTime()%>',
-		 								end:'<%=schedules.get(i).getDate()+"T"+schedules.get(i).getEndTime()%>',
-		 								id:<%=i%>
-		 							}<%if(i != (schedules.size()-1)){%>,<%}%>
-		 					 <%}%>	]
+									for (i=0;i<schedules.size();i++){%> 
+		 								{
+		 									title:'<%=schedules.get(i).getName()%>',
+		 									start:'<%=schedules.get(i).getDate()+"T"+schedules.get(i).getStartTime()%>',
+		 									end:'<%=schedules.get(i).getDate()+"T"+schedules.get(i).getEndTime()%>',
+		 									id:<%=i%>,
+		 									backgroundColor: 'blue'
+		 								}
+		 								<%if(i != (schedules.size()-1)||appointments != null){%>,<%}%>
+		 					 		<%}	
+									if (appointments != null){
+										for(i=0;i<appointments.size();i++){%>
+		 									{
+ 												title:'<%=appointments.get(i).getAppointmentType()%>',
+ 												start:'<%=appointments.get(i).getAdvisingDate()+"T"+appointments.get(i).getAdvisingStartTime()%>',
+ 												end:'<%=appointments.get(i).getAdvisingDate()+"T"+appointments.get(i).getAdvisingEndTime()%>',
+ 												id:<%=i*i%>,
+ 												backgroundColor: 'orange'
+ 											}
+ 											<%if(i != (appointments.size()-1)){%>,<%}
+ 										}
+									}%>		 					 
+		 					 			]
 		    					});
 		    				});
 	 						</script>	

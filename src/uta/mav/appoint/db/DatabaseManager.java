@@ -65,5 +65,9 @@ public class DatabaseManager {
 	public ArrayList<AppointmentType> getAppointmentTypes(String pname) throws SQLException{
 		return imp.getAppointmentTypes(pname);
 	}
+	
+	public Boolean updateAppointment(Appointment a, String id) throws SQLException{
+		return imp.updateAppointment(a, id);
+	}
 }
 

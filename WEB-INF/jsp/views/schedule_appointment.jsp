@@ -37,6 +37,7 @@
 		    						eventClick: function(event,element){
 		    							document.getElementById("id2").value = event.id;
 		    							document.getElementById("apptype").value = '<%=request.getParameter("apptype")%>';
+		    							document.getElementById("duration").value = '<%=request.getParameter("duration")%>';
 		    							document.getElementById("pname").value = '<%=request.getParameter("pname")%>';
 		    							document.getElementById("start").value = event.start;
 		    							document.getElementById("end").value = event.end;
@@ -63,6 +64,7 @@
 						<input type="hidden" name=start id="start">
 						<input type="hidden" name=end id="end">
 						<input type="hidden" name=pname id="pname">
+						<input type="hidden" name=duration id="duration">
 						UTA Student ID: <br><input type="text" name="studentid"> <br>
 						Description: <br><textarea rows=4 columns="10" name="description"></textarea>
 				</div>

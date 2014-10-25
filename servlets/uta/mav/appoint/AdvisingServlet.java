@@ -10,7 +10,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import uta.mav.appoint.beans.AdvisingSchedule;
+import uta.mav.appoint.beans.Appointment;
 import uta.mav.appoint.db.DatabaseManager;
 import uta.mav.appoint.login.LoginUser;
 
@@ -43,6 +43,10 @@ public class AdvisingServlet extends HttpServlet{
 					ArrayList<TimeSlotComponent> schedules = dbm.getAdvisorSchedule("all");
 					if (schedules.size() != 0){
 						session.setAttribute("schedules", schedules);
+					}
+					ArrayList<Appointment> appointments = dbm.getAppointments(user);
+					if (appointments.size() != 0){
+						session.setAttribute("appointments", appointments);
 					}
 			}
 			catch(Exception e){

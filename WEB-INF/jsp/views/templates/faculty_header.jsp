@@ -1,7 +1,6 @@
 <%@include file="top_header.jsp" %>
 			<div>
 				<ul class="nav navbar-nav">
-				<li class="active"><a href="index">Home</a></li>
 				<li><a href="#"> Admit Student </a></li>
 				</ul>
 				<ul class="nav navbar-nav navbar-right">

@@ -13,11 +13,14 @@ import uta.mav.appoint.beans.AllocateTime;
 import uta.mav.appoint.beans.Appointment;
 import uta.mav.appoint.beans.AppointmentType;
 import uta.mav.appoint.beans.GetSet;
+import uta.mav.appoint.db.command.CheckUser;
+import uta.mav.appoint.db.command.GetAdvisors;
+import uta.mav.appoint.db.command.SQLCmd;
+import uta.mav.appoint.db.command.UpdateAppointment;
 import uta.mav.appoint.flyweight.TimeSlotFlyweightFactory;
 import uta.mav.appoint.helpers.TimeSlotHelpers;
 import uta.mav.appoint.login.AdminUser;
 import uta.mav.appoint.login.AdvisorUser;
-import uta.mav.appoint.login.FacultyUser;
 import uta.mav.appoint.login.LoginUser;
 import uta.mav.appoint.login.StudentUser;
 
@@ -42,37 +45,32 @@ public class RDBImpl implements DBImplInterface{
 			
 	//user login checking, check username and password against database
 	//then return role if a match is found
+	//using command pattern
 	public LoginUser checkUser(GetSet set) throws SQLException{
 		LoginUser user = null;
-		int count = 0;
 		try{
-		Connection conn = this.connectDB();
-		String command = "SELECT COUNT(*),ROLE FROM USER WHERE EMAIL=? and PASSWORD=?";
-		PreparedStatement statement = conn.prepareStatement(command); 
-		statement.setString(1,set.getEmailAddress());
-		statement.setString(2,set.getPassword());
-		ResultSet res = statement.executeQuery();
-		while(res.next()){
-			if (!(res.getInt(1) == 0)){
-				if (res.getString(2).toLowerCase().equals("advisor")){
-					user = new AdvisorUser(set.getEmailAddress());
-				}
-				else if (res.getString(2).toLowerCase().equals("student")){
-					user = new StudentUser(set.getEmailAddress());
-				}
-				else if (res.getString(2).toLowerCase().equals("admin")){
-					user = new AdminUser(set.getEmailAddress());
-				} else {
-					user = new FacultyUser(set.getEmailAddress());
-				}
-			}		
+			SQLCmd cmd = new CheckUser(set.getEmailAddress(), set.getPassword());
+			cmd.execute();
+			user = (LoginUser)(cmd.getResult()).get(0);
+			
 		}
-		conn.close();
-		}
-		catch(SQLException e){
-			System.out.printf(e.toString());
+		catch(Exception e){
+			System.out.println(e);
 		}
 		return user;
+	}
+	
+	public Boolean updateAppointment(Appointment a, String id){
+		Boolean result = false;
+		try{
+			SQLCmd cmd = new UpdateAppointment(a.getAppointmentType(),id,a.getAppointmentId());
+			cmd.execute();
+			result = (Boolean)(cmd.getResult()).get(0);
+		}
+		catch(Exception e){
+			
+		}
+		return result;
 	}
 	
 	public int addUser(GetSet set){
@@ -84,21 +82,18 @@ public class RDBImpl implements DBImplInterface{
 		return 0;
 	}
 	
+	//using command pattern
 	public ArrayList<String> getAdvisors() throws SQLException{
 		ArrayList<String> arraylist = new ArrayList<String>();
 		try{
-			Connection conn = this.connectDB();
-			String command = "SELECT pname FROM USER,ADVISOR_SETTINGS WHERE ROLE=? AND USER.userid = ADVISOR_SETTINGS.userid";
-			PreparedStatement statement = conn.prepareStatement(command);
-			statement.setString(1,"advisor");
-			ResultSet res = statement.executeQuery();
-			while (res.next()){
-				arraylist.add(res.getString(1));
+			SQLCmd cmd = new GetAdvisors();
+			cmd.execute();
+			ArrayList<Object> tmp = cmd.getResult();
+			for (int i=0;i<tmp.size();i++){
+				arraylist.add(((String)tmp.get(i)));
 			}
-
-			conn.close();
 		}
-		catch(SQLException sq){
+		catch(Exception sq){
 			System.out.printf(sq.toString());
 		}
 		return arraylist;
@@ -299,7 +294,7 @@ public class RDBImpl implements DBImplInterface{
 		try{
 			Connection conn = this.connectDB();
 			PreparedStatement statement;
-			String command = "SELECT count(*) from appointments where id=?";
+			String command = "SELECT count(*),advising_date,advising_starttime, advising_endtime from appointments where id=?";
 			statement=conn.prepareStatement(command);
 			statement.setInt(1,id);
 			ResultSet rs = statement.executeQuery();
@@ -309,9 +304,11 @@ public class RDBImpl implements DBImplInterface{
 					statement=conn.prepareStatement(command);
 					statement.setInt(1, id);
 					statement.executeUpdate();
-					command = "UPDATE advising_schedule SET studentid=null where id=?";
+					command = "UPDATE advising_schedule SET studentid=null where advising_date=? AND advising_starttime >=? AND advising_endtime <=?";
 					statement=conn.prepareStatement(command);
-					statement.setInt(1, id);
+					statement.setString(1, rs.getString(2));
+					statement.setString(2,rs.getString(3));
+					statement.setString(3, rs.getString(4));
 					statement.executeUpdate();
 					result = true;
 				}
