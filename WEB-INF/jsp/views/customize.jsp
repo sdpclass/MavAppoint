@@ -1,6 +1,5 @@
-<%@include file="templates/header.jsp" %>
-
-	<div class="container">
+<jsp:include page='<%=(String) request.getAttribute("includeHeader")%>' />
+<div class="container">
 	<form action="#" method="post">
 	<div class="row">
 	<div class="col-md-4 col-lg-4">
@@ -28,12 +27,13 @@
 	</div>
 	<p><a href="#" data-toggle="modal" data-target="#addApptType">Customize Appointments</a>
 	<button type="submit" class="btn btn-primary">Submit</button></p>
-	
+	<form>
 	<div class="modal fade" id="addApptType" tabindex="-1">
 		<div class="modal-dialog">
 			<div class="modal-content">
 				<div class="modal-header">
 					<button type="button" class="close"
+					
 						data-dismiss="modal"></button>
 					<h4 class="modal-title" id=addApptTypeLabel">
 						Add Appointment Type
@@ -53,6 +53,7 @@
 			</div>
 		</div>
 	</div>
+	</form>
 </form>
 </div>	
 <%@include file="templates/footer.jsp"%>
