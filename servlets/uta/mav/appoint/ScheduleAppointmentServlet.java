@@ -9,6 +9,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import uta.mav.appoint.beans.Appointment;
 import uta.mav.appoint.beans.AppointmentType;
 import uta.mav.appoint.db.DatabaseManager;
 import uta.mav.appoint.login.LoginUser;
@@ -48,29 +49,30 @@ public class ScheduleAppointmentServlet extends HttpServlet{
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		session = request.getSession();
 		try{
-		int id = Integer.parseInt(request.getParameter("id2"));
-		String studentid = request.getParameter("studentid");
-		String type = request.getParameter("apptype");
-		String pname = request.getParameter("pname");
-		int d = Integer.parseInt(request.getParameter("duration"));
-		String[] parts = (request.getParameter("start")).split(" ");
-		String date = parts[3] + "-" + convertDate(parts[1]) + "-" + parts[2];
-		parts = parts[4].split(":");
-		String start = parts[0] + ":" + parts[1];
-		String end = addTime(parts[0],parts[1],d);
-		String email = ((LoginUser)session.getAttribute("user")).getEmail();
-		
-		DatabaseManager dbm = new DatabaseManager();
-		Boolean result = dbm.createAppointment(id,studentid,type,email,pname,date, start, end);
-		if (result == true){
-			response.setHeader("Refresh","2; URL=advising");
-			request.getRequestDispatcher("/WEB-INF/jsp/views/success.jsp").forward(request,response);
-		}
-		else{
-			response.setHeader("Refresh","2; URL=advising");
-			request.getRequestDispatcher("/WEB-INF/jsp/views/failure.jsp").forward(request,response);
-		}
-			
+			Appointment a = new Appointment();
+			a.setAppointmentId(Integer.parseInt(request.getParameter("id2")));
+			a.setStudentid(request.getParameter("studentid"));
+			a.setDescription(request.getParameter("description"));
+			a.setAppointmentType(request.getParameter("apptype"));
+			a.setPname(request.getParameter("pname"));
+			a.setDescription(request.getParameter("description"));
+			int d = Integer.parseInt(request.getParameter("duration"));
+			String[] parts = (request.getParameter("start")).split(" ");
+			a.setAdvisingDate(parts[3] + "-" + convertDate(parts[1]) + "-" + parts[2]);
+			parts = parts[4].split(":");
+			a.setAdvisingStartTime(parts[0] + ":" + parts[1]);
+			a.setAdvisingEndTime(addTime(parts[0],parts[1],d));
+			String email = ((LoginUser)session.getAttribute("user")).getEmail();
+			DatabaseManager dbm = new DatabaseManager();
+			Boolean result = dbm.createAppointment(a,email);
+			if (result == true){
+				response.setHeader("Refresh","2; URL=advising");
+				request.getRequestDispatcher("/WEB-INF/jsp/views/success.jsp").forward(request,response);
+			}
+			else{
+				response.setHeader("Refresh","2; URL=advising");
+				request.getRequestDispatcher("/WEB-INF/jsp/views/failure.jsp").forward(request,response);
+			}		
 		}
 		catch(Exception e){
 			System.out.printf(e.toString());
@@ -82,7 +84,7 @@ public class ScheduleAppointmentServlet extends HttpServlet{
 		try{
 		int h = Integer.parseInt(hour);
 		int m = Integer.parseInt(minute);
-		if (m + add > 60){
+		if (m + add >= 60){
 			m = m+add-60;
 			h++;
 		}

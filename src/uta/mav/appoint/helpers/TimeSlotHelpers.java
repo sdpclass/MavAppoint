@@ -148,7 +148,7 @@ public class TimeSlotHelpers {
 					CompositeTimeSlot cts = new CompositeTimeSlot();
 					cts.add(fin.get(i));
 					int h=k;
-					while(cts.getEndTime().equals(fin.get(k).getStartTime())){
+					while(cts.getEndTime().equals(fin.get(k).getStartTime())&&fin.get(i).getName().equals(fin.get(i+1).getName())){
 						if (fin.get(i).getName().equals(fin.get(k).getName())){ //don't group different user slots together
 							cts.add(fin.get(k));
 							h++;

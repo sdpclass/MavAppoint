@@ -14,6 +14,8 @@ public class Appointment implements Serializable{
 	String advisingEndTime;
 	String appointmentType;
 	String advisorEmail;
+	String description;
+	String studentid;
 	int appointmentId;
 	
 	/**
@@ -105,5 +107,29 @@ public class Appointment implements Serializable{
 	public String toString(){
 		return	String.format("%10s %10s %s %s %s %s",this.getPname(),this.getAdvisingDate(),this.getAdvisingStartTime(),
 				this.getAdvisingEndTime(),this.getAppointmentType(),this.getAdvisorEmail());
+	}
+	/**
+	 * @return the description
+	 */
+	public String getDescription() {
+		return description;
+	}
+	/**
+	 * @param description the description to set
+	 */
+	public void setDescription(String description) {
+		this.description = description;
+	}
+	/**
+	 * @return the studentid
+	 */
+	public String getStudentid() {
+		return studentid;
+	}
+	/**
+	 * @param studentid the studentid to set
+	 */
+	public void setStudentid(String studentid) {
+		this.studentid = studentid;
 	}
 }

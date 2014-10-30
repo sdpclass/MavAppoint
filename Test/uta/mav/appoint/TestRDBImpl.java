@@ -115,30 +115,31 @@ public class TestRDBImpl {
 
 	@Test
 	public void testCreateAppointment() {//test all inputs invalid
-		String studentid = "0";
-		String type = "";
+		Appointment a = new Appointment();
+		a.setStudentid("0");
+		a.setAppointmentType("");
+		a.setAdvisingDate("2014-01-01");
+		a.setAdvisingStartTime("12:00");
+		a.setAdvisingEndTime("13:00"); 
+		a.setPname("...");
+		a.setAppointmentId(0);
 		String email = "teststudent@mavs.uta.edu";
-		String date = "2014-01-01";
-		String start = "12:00";
-		String end = "13:00"; 
-		String pname = "...";
-		int id = 0;
-		assertTrue(dbm.createAppointment(id,studentid,type,email,pname,date, start, end) == false);
+		
+		assertTrue(dbm.createAppointment(a,email) == false);
 		//test success
-		studentid = "1234567890";
-		type = "Add Class";
-		email = "teststudent@mavs.uta.edu";
-		date = "2014-10-07";
-		start = "09:00";
-		end = "09:15";
-		id=10;
-		pname = "Test Adv 1";
-		assertTrue(dbm.createAppointment(id,studentid,type,email,pname,date, start, end) == true);
+		a.setStudentid("1000123456");
+		a.setAppointmentType("Add Class");
+		a.setAdvisingDate("2014-10-07");
+		a.setAdvisingStartTime("09:00");
+		a.setAdvisingEndTime("09:15");
+		a.setAppointmentId(10);
+		a.setPname("Test Adv 1");
+		assertTrue(dbm.createAppointment(a,email) == true);
 	}
 
 	@Test
 	public void testGetAppointments() {
-		AdvisorUser user = new AdvisorUser("notanadvisor@uta.edu");
+		AdvisorUser user = new AdvisorUser("notanadvisor@uta.edu","Test Adv 1");
 		ArrayList<Appointment> array = dbm.getAppointments(user);
 		assertTrue(array.size() == 0);
 		user.setEmail("testadvisor@uta.edu");

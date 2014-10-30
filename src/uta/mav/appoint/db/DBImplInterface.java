@@ -19,7 +19,7 @@ public interface DBImplInterface {
 	public ArrayList<Appointment> getAppointments(AdvisorUser user) throws SQLException;
 	public ArrayList<Appointment> getAppointments(StudentUser user) throws SQLException;
 	public ArrayList<Appointment> getAppointments(AdminUser user) throws SQLException;
-	public Boolean createAppointment(int id,String studentid,String type, String email,String pname, String date, String start, String end) throws SQLException;
+	public Boolean createAppointment(Appointment a, String email) throws SQLException;
 	public ArrayList<TimeSlotComponent> getAdvisorSchedule(String name) throws SQLException;
 	public int addUser(GetSet set) throws SQLException;
 	public ArrayList<String> getAdvisors() throws SQLException;
@@ -27,6 +27,7 @@ public interface DBImplInterface {
 	public Boolean addTimeSlot(AllocateTime at) throws SQLException;
 	public Connection connectDB();
 	public ArrayList<AppointmentType> getAppointmentTypes(String pname) throws SQLException;
-	public Boolean updateAppointment(Appointment a, String id);
-	
+	public Boolean updateAppointment(Appointment a);
+	public Boolean deleteTimeSlot(AllocateTime at) throws SQLException;
+	public Appointment getAppointment(String d, String e) throws SQLException;
 }

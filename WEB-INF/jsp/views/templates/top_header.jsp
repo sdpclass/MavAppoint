@@ -19,22 +19,14 @@
 	<script type="text/javascript" src="js/fullcalendar.js"></script>
 	<script type="text/javascript" src="components/bootstrap3/js/bootstrap-datetimepicker.min.js"></script>
 	<style>
-	body {background-color:#ffffff}
-	.inversenavbar {background-color:white}
+	body {padding-top:100px;padding-bottom:100px;}
 	</style>
 </head>
 <body>
+<img src="img/logo.jpg"  height="100" alt="">
 <div class="container">
-	<nav class="navbar" role="navigation">
-    	<div class="container">
-		    <!-- Brand and toggle get grouped for better mobile display -->
-			<a class="navbar-brand-centered" href="#">
-				<img src="img/logo.jpg"  height="100" alt="">
-            </a>
-		</div>
-	</nav>
-	<nav class="navbar navbar-inverse">
-		<div id="inversenavbar" class="container-fluid">
-			<div class="navbar-header">
-				<a class="navbar-brand" href="index"> MavAppoint</a>
+	<nav class="navbar navbar-inverse navbar-fixed-top">
+		<div id="inversenavbar" class="container-fluid" style="background-color:orange">
+			<div class="navbar-header">	
+				<a class="navbar-brand" href="index"> <b>MavAppoint</b></a>
 			</div>

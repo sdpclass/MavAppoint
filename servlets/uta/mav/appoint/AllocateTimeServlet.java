@@ -1,6 +1,7 @@
 package uta.mav.appoint;
 
 import java.io.IOException;
+import java.util.ArrayList;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -9,6 +10,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import uta.mav.appoint.beans.AllocateTime;
+import uta.mav.appoint.beans.Appointment;
 import uta.mav.appoint.db.DatabaseManager;
 import uta.mav.appoint.helpers.TimeSlotHelpers;
 import uta.mav.appoint.login.AdvisorUser;
@@ -20,17 +22,29 @@ public class AllocateTimeServlet extends HttpServlet {
 	
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		session = request.getSession();
-		LoginUser user = (LoginUser)session.getAttribute("user");
-		if (user != null){
-			try{
+		try{
+			AdvisorUser user = (AdvisorUser)session.getAttribute("user");
+			if (user != null && user instanceof AdvisorUser){
 					header = "templates/" + user.getHeader() + ".jsp";
-			}
-			catch(Exception e){
-				
+					DatabaseManager dbm = new DatabaseManager();
+					ArrayList<TimeSlotComponent> schedules = dbm.getAdvisorSchedule(user.getPname());
+					if (schedules.size() != 0){
+						session.setAttribute("schedules", schedules);
+					}
+					ArrayList<Appointment> appointments = dbm.getAppointments(user);
+					if (appointments.size() != 0){
+						session.setAttribute("appointments", appointments);
+					}
+				}
+			else{
+				header = "templates/header.jsp";
+				request.setAttribute("includeHeader", header);
+				request.getRequestDispatcher("/WEB-INF/jsp/views/login.jsp").forward(request, response);
 			}
 		}
-		else{
+		catch(Exception e){
 			header = "templates/header.jsp";
+			System.out.println(e);
 		}
 		request.setAttribute("includeHeader", header);
 		request.getRequestDispatcher("/WEB-INF/jsp/views/allocate_time.jsp").forward(request, response);
@@ -39,7 +53,7 @@ public class AllocateTimeServlet extends HttpServlet {
 	
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		session = request.getSession();
-		String date = request.getParameter("Date");
+		String date = request.getParameter("opendate");
 		String startTime = request.getParameter("StartTime");
 		String endTime = request.getParameter("EndTime");
 		LoginUser user = (LoginUser)session.getAttribute("user");
@@ -60,6 +74,7 @@ public class AllocateTimeServlet extends HttpServlet {
 			if (user instanceof AdvisorUser){
 				DatabaseManager dbm = new DatabaseManager();
 				Boolean result = dbm.addTimeSlot(at);
+				//increase the day of month by 7 for repeat
 				for (int i=0;i<rep;i++){
 					at.setDate(TimeSlotHelpers.addDate(at.getDate(),1));
 					result = dbm.addTimeSlot(at);

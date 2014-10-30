@@ -1,26 +1,6 @@
 <jsp:include page='<%=(String) request.getAttribute("includeHeader")%>' />
 <div class="container">
-	<nav class="navbar" role="navigation">
-    	  <div class="container">
-		    <!-- Brand and toggle get grouped for better mobile display -->
-			<a class="navbar-brand-centered" href="#">
-            </a>
-		    <div class="navbar-header">
-		      <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar-brand-centered">
-		        <span class="sr-only">Toggle navigation</span>
-		        <span class="icon-bar"></span>
-		        <span class="icon-bar"></span>
-		        <span class="icon-bar"></span>
-		      </button>
-		      
-		    </div>
-
-		    
-		  </div><!-- /.container-fluid -->
-		</nav>
-
 	<div class="page-header">
-		
 		<div class="pull-right form-inline">
 			<div class="btn-group">
 				 	<form action="advising" method="post" name="advisor_form">
@@ -52,14 +32,10 @@
 
 			</div>
 		</div>
-		
 	</div>
-	
-	<br/>
 	<div class="date-display span12">
 		<h3></h3>
 	</div>
-	<br/>
 	
 			<div id='calendar'></div>
 		<%@ page import= "uta.mav.appoint.TimeSlotComponent" %>
@@ -86,9 +62,14 @@
 		    							'default' : true,
 		    						},
 		    						eventClick: function(event,element){
+		    							if (event.id > 0){
 		    							document.getElementById("id1").value = event.id;
 		    							document.getElementById("pname").value = event.title;
-		    							addAppt.submit();	
+		    							addAppt.submit();
+		    							}
+		    							else{
+		    								updateAppt.submit();
+		    							}
 		    						},
 		    					events: [
 		 		    		<% int i = 0;
@@ -108,7 +89,7 @@
  												title:'<%=appointments.get(i).getAppointmentType()%>',
  												start:'<%=appointments.get(i).getAdvisingDate()+"T"+appointments.get(i).getAdvisingStartTime()%>',
  												end:'<%=appointments.get(i).getAdvisingDate()+"T"+appointments.get(i).getAdvisingEndTime()%>',
- 												id:<%=i*i%>,
+ 												id:<%=-i%>,
  												backgroundColor: 'orange'
  											}
  											<%if(i != (appointments.size()-1)){%>,<%}
@@ -124,7 +105,10 @@
 		<input type="hidden" name=id1 id="id1">
 		<input type="hidden" name=pname id="pname">
 	</form>		 							
-		 		    	
+	
+	<form name=updateAppt action="appointments" method="get">
+	</form>
+  	
 	<br/><br/><hr>
 </div>
 <%@include file="templates/footer.jsp" %>

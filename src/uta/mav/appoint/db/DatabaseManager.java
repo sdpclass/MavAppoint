@@ -36,8 +36,8 @@ public class DatabaseManager {
 		return imp.getAdvisorSchedule(name);
 	}
 
-	public Boolean createAppointment(int id,String studentid,String type, String email,String pname, String date, String start, String end) throws SQLException{
-		return imp.createAppointment(id,studentid,type,email,pname,date,start,end);
+	public Boolean createAppointment(Appointment a,String email) throws SQLException{
+		return imp.createAppointment(a,email);
 	}
 
 	public ArrayList<Appointment> getAppointments(LoginUser user) throws SQLException{
@@ -66,8 +66,16 @@ public class DatabaseManager {
 		return imp.getAppointmentTypes(pname);
 	}
 	
-	public Boolean updateAppointment(Appointment a, String id) throws SQLException{
-		return imp.updateAppointment(a, id);
+	public Boolean updateAppointment(Appointment a) throws SQLException{
+		return imp.updateAppointment(a);
+	}
+
+	public Boolean deleteTimeSlot(AllocateTime at) throws SQLException{
+		return imp.deleteTimeSlot(at);
+	}
+
+	public Appointment getAppointment(String date, String email) throws SQLException{
+		return imp.getAppointment(date,email);
 	}
 }
 
