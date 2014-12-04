@@ -9,6 +9,24 @@ public class PrimitiveTimeSlot extends TimeSlotComponent{
 	private String endtime;
 	private int uniqueid;
 	
+	
+	@Override
+	public String getEvent(int m){
+	return "{\n"
+			+	"title:\'Available\',\n"
+			+	"start:\'"+this.getDate()+"T"+this.getStartTime()+"\',\n"
+			+	"end:\'"+this.getDate()+"T"+this.getEndTime()+"\',\n"
+			+	"id:"+this.getUniqueId()+",\n"
+			+"}\n";
+	}
+	
+	@Override
+	public ArrayList<TimeSlotComponent> expandTimeSlots(ArrayList<TimeSlotComponent> ts){
+		ts.add(this);
+		return ts;
+	
+	}
+	
 	@Override
 	public String getName(){
 		return this.name;
@@ -62,20 +80,4 @@ public class PrimitiveTimeSlot extends TimeSlotComponent{
 		this.uniqueid = uniqueid;
 	}
 	
-	@Override
-	public String getEvent(int m){
-	return "{\n"
-			+	"title:\'Available\',\n"
-			+	"start:\'"+this.getDate()+"T"+this.getStartTime()+"\',\n"
-			+	"end:\'"+this.getDate()+"T"+this.getEndTime()+"\',\n"
-			+	"id:"+this.getUniqueId()+",\n"
-			+"}\n";
-	}
-	
-	@Override
-	public ArrayList<TimeSlotComponent> expandTimeSlots(ArrayList<TimeSlotComponent> ts){
-		ts.add(this);
-		return ts;
-	
-	}
 }

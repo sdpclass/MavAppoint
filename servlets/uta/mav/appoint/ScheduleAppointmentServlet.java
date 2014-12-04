@@ -24,22 +24,20 @@ public class ScheduleAppointmentServlet extends HttpServlet{
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		session = request.getSession();
 		LoginUser user = (LoginUser)session.getAttribute("user");
-		if (user != null){
-			try{
-				header = "templates/" + user.getHeader() + ".jsp";
-				int id = Integer.parseInt(request.getParameter("id1"));
-				ArrayList<TimeSlotComponent> array = (ArrayList<TimeSlotComponent>)session.getAttribute("schedules");
-				DatabaseManager dbm = new DatabaseManager();
-				ArrayList<AppointmentType> ats = dbm.getAppointmentTypes(request.getParameter("pname"));
-				session.setAttribute("timeslot", array.get(id));
-				session.setAttribute("appointmenttypes", ats);
-			}
-			catch(Exception e){
-				
-			}
+		if (user == null){
+			user = new LoginUser();
 		}
-		else{
-			header = "templates/header.jsp";
+		try{
+			header = "templates/" + user.getHeader() + ".jsp";
+			int id = Integer.parseInt(request.getParameter("id1"));
+			ArrayList<TimeSlotComponent> array = (ArrayList<TimeSlotComponent>)session.getAttribute("schedules");
+			DatabaseManager dbm = new DatabaseManager();
+			ArrayList<AppointmentType> ats = dbm.getAppointmentTypes(request.getParameter("pname"));
+			session.setAttribute("timeslot", array.get(id));
+			session.setAttribute("appointmenttypes", ats);
+		}
+		catch(Exception e){
+			System.out.printf(e.toString());
 		}
 		request.setAttribute("includeHeader", header);
 		request.getRequestDispatcher("/WEB-INF/jsp/views/schedule_appointment.jsp").forward(request, response);
@@ -62,7 +60,7 @@ public class ScheduleAppointmentServlet extends HttpServlet{
 			parts = parts[4].split(":");
 			a.setAdvisingStartTime(parts[0] + ":" + parts[1]);
 			a.setAdvisingEndTime(addTime(parts[0],parts[1],d));
-			String email = ((LoginUser)session.getAttribute("user")).getEmail();
+			String email = request.getParameter("email");
 			DatabaseManager dbm = new DatabaseManager();
 			Boolean result = dbm.createAppointment(a,email);
 			if (result == true){

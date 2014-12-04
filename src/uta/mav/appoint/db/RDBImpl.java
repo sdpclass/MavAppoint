@@ -12,11 +12,18 @@ import uta.mav.appoint.TimeSlotComponent;
 import uta.mav.appoint.beans.AllocateTime;
 import uta.mav.appoint.beans.Appointment;
 import uta.mav.appoint.beans.AppointmentType;
+import uta.mav.appoint.beans.CreateAdvisorBean;
 import uta.mav.appoint.beans.GetSet;
+import uta.mav.appoint.db.command.AddAppointmentType;
+import uta.mav.appoint.db.command.AddTimeSlot;
+import uta.mav.appoint.db.command.CheckTimeSlot;
 import uta.mav.appoint.db.command.CheckUser;
+import uta.mav.appoint.db.command.CreateAdvisor;
+import uta.mav.appoint.db.command.CreateInitialAdvisorSettings;
 import uta.mav.appoint.db.command.DeleteTimeSlot;
 import uta.mav.appoint.db.command.GetAdvisors;
 import uta.mav.appoint.db.command.GetAppointment;
+import uta.mav.appoint.db.command.GetUserID;
 import uta.mav.appoint.db.command.SQLCmd;
 import uta.mav.appoint.db.command.UpdateAppointment;
 import uta.mav.appoint.flyweight.TimeSlotFlyweightFactory;
@@ -168,10 +175,8 @@ public class RDBImpl implements DBImplInterface{
 			rs = statement.executeQuery();
 			while(rs.next()){
 				if (rs.getInt(1) < 1){
-					
-					
-					command = "INSERT INTO appointments (id,advisor_userid,student_userid,advising_date,advising_starttime,advising_endtime,appointment_type,studentid,description)"
-							+"VALUES(?,?,?,?,?,?,?,?,?)";
+					command = "INSERT INTO appointments (id,advisor_userid,student_userid,advising_date,advising_starttime,advising_endtime,appointment_type,studentid,description,student_email)"
+							+"VALUES(?,?,?,?,?,?,?,?,?,?)";
 					statement = conn.prepareStatement(command);
 					statement.setInt(1, a.getAppointmentId());
 					statement.setInt(2,advisor_id);
@@ -182,6 +187,7 @@ public class RDBImpl implements DBImplInterface{
 					statement.setString(7,a.getAppointmentType());
 					statement.setInt(8,Integer.parseInt(a.getStudentid()));
 					statement.setString(9,a.getDescription());
+					statement.setString(10,email);
 					statement.executeUpdate();
 					command = "UPDATE advising_schedule SET studentid=? where userid=? AND advising_date=? and advising_starttime >= ? and advising_endtime <= ?";
 					statement=conn.prepareStatement(command);
@@ -193,8 +199,8 @@ public class RDBImpl implements DBImplInterface{
 					statement.executeUpdate();
 					result = true;
 				}
-				conn.close();
 			}
+			conn.close();
 		}
 		catch(Exception e){
 			System.out.printf(e.toString());
@@ -202,12 +208,12 @@ public class RDBImpl implements DBImplInterface{
 		return result;
 	}
 
-	public ArrayList<Appointment> getAppointments(AdvisorUser user){
-		ArrayList<Appointment> appointments = new ArrayList<Appointment>();
+	public ArrayList<Object> getAppointments(AdvisorUser user){
+		ArrayList<Object> appointments = new ArrayList<Object>();
 		try{
 			Connection conn = this.connectDB();
 			PreparedStatement statement;
-			String command = "SELECT advisor_settings.pname,advisor_settings.email,advising_date,advising_starttime,advising_endtime,appointment_type,id,appointments.description,studentid FROM USER,APPOINTMENTS,ADVISOR_SETTINGS "
+			String command = "SELECT advisor_settings.pname,advisor_settings.email,advising_date,advising_starttime,advising_endtime,appointment_type,id,appointments.description,studentid,appointments.student_email FROM USER,APPOINTMENTS,ADVISOR_SETTINGS "
 						+ "WHERE USER.email=? AND user.userid=appointments.advisor_userid AND advisor_settings.userid=appointments.advisor_userid";
 			statement = conn.prepareStatement(command);
 			statement.setString(1, user.getEmail());
@@ -223,6 +229,7 @@ public class RDBImpl implements DBImplInterface{
 				set.setAppointmentId(rs.getInt(7));
 				set.setDescription(rs.getString(8));
 				set.setStudentid(rs.getString(9));
+				set.setStudentEmail(rs.getString(10));
 				appointments.add(set);
 			}
 			conn.close();
@@ -234,12 +241,12 @@ public class RDBImpl implements DBImplInterface{
 		return appointments;
 	}
 
-	public ArrayList<Appointment> getAppointments(StudentUser user){
-		ArrayList<Appointment> appointments = new ArrayList<Appointment>();
+	public ArrayList<Object> getAppointments(StudentUser user){
+		ArrayList<Object> appointments = new ArrayList<Object>();
 		try{
 			Connection conn = this.connectDB();
 			PreparedStatement statement;
-			String command = "SELECT advisor_settings.pname,advisor_settings.email,advising_date,advising_starttime,advising_endtime,appointment_type,id,description FROM USER,APPOINTMENTS,ADVISOR_SETTINGS "
+			String command = "SELECT advisor_settings.pname,advisor_settings.email,advising_date,advising_starttime,advising_endtime,appointment_type,id,description,student_email FROM USER,APPOINTMENTS,ADVISOR_SETTINGS "
 						+ "WHERE USER.email=? AND user.userid=appointments.student_userid AND advisor_settings.userid=appointments.advisor_userid";
 			statement = conn.prepareStatement(command);
 			statement.setString(1, user.getEmail());
@@ -255,6 +262,7 @@ public class RDBImpl implements DBImplInterface{
 				set.setAppointmentId(rs.getInt(7));
 				set.setDescription(rs.getString(8));
 				set.setStudentid("Advisor only");
+				set.setStudentEmail(rs.getString(9));
 				appointments.add(set);
 			}
 			conn.close();
@@ -266,8 +274,8 @@ public class RDBImpl implements DBImplInterface{
 		return appointments;
 	}
 
-	public ArrayList<Appointment> getAppointments(AdminUser user){
-		ArrayList<Appointment> appointments = new ArrayList<Appointment>();
+	public ArrayList<Object> getAppointments(AdminUser user){
+		ArrayList<Object> appointments = new ArrayList<Object>();
 		try{
 			Connection conn = this.connectDB();
 			PreparedStatement statement;
@@ -318,73 +326,30 @@ public class RDBImpl implements DBImplInterface{
 					statement.executeUpdate();
 					result = true;
 				}
-			conn.close();
 			}
+			conn.close();	
 		}
 		catch(SQLException e){
-			System.out.printf(e.toString());
+			System.out.printf("Error in Database: " + e.toString());
+			return false;
 		}
 		return result;
 	}
 	
-	public Boolean addTimeSlot(AllocateTime at){
-		Boolean result = false;
-		int userid = 0;
-		int count = TimeSlotHelpers.count(at.getStartTime(),at.getEndTime());
-		try{
-			Connection conn = this.connectDB();
-			PreparedStatement statement;
-			String command = "SELECT userid FROM user where email=?";
-			statement=conn.prepareStatement(command);
-			statement.setString(1, at.getEmail());
-			ResultSet rs = statement.executeQuery();
-			while(rs.next()){
-				userid = rs.getInt(1);
-			}
-			conn.close();
+	public String addTimeSlot(AllocateTime at){
+		SQLCmd cmd = new GetUserID(at.getEmail());
+		cmd.execute();
+		int id = (int)cmd.getResult().get(0);
+		cmd = new CheckTimeSlot(at,id);
+		cmd.execute();
+		if ((Boolean)cmd.getResult().get(0) == true){
+			cmd = new AddTimeSlot(at,id);
+			cmd.execute();
+			return (String)cmd.getResult().get(0);
 		}
-		catch(Exception e){
-			System.out.printf("First command" + e);
+		else{
+			return "Unable to add time slot.";
 		}
-		try{
-			Connection conn = this.connectDB();
-			PreparedStatement statement;
-			String command = "SELECT COUNT(*) FROM  ADVISING_SCHEDULE WHERE advising_date=? AND advising_starttime >=? AND advising_endtime <=? AND userid=?";
-			statement = conn.prepareStatement(command);
-				statement.setString(1,at.getDate());
-				statement.setString(2,at.getStartTime());
-				statement.setString(3,at.getEndTime());
-				statement.setInt(4,userid);
-				ResultSet rs = statement.executeQuery();
-			while(rs.next()){
-				if (rs.getInt(1)>=1){
-					result = false;
-					return result;
-				}
-			}
-		}
-		catch(Exception e){
-			
-		}
-		try{
-			Connection conn = this.connectDB();
-			PreparedStatement statement;
-			String command = "INSERT INTO ADVISING_SCHEDULE (advising_date,advising_starttime,advising_endtime,studentid,userid) VALUES(?,?,?,null,?)";
-			statement = conn.prepareStatement(command);
-			statement.setString(1,at.getDate());
-			for (int i=0;i<count;i++){
-				statement.setString(2,TimeSlotHelpers.add(at.getStartTime(),i));
-				statement.setString(3,TimeSlotHelpers.add(at.getStartTime(),i+1));
-				statement.setInt(4,userid);
-				statement.executeUpdate();
-			}
-			result = true;
-			conn.close();
-		}
-		catch(Exception e){
-			
-		}
-		return result;
 	}
 	
 	public ArrayList<AppointmentType> getAppointmentTypes(String pname){
@@ -392,7 +357,7 @@ public class RDBImpl implements DBImplInterface{
 			try{
 			Connection conn = this.connectDB();
 			PreparedStatement statement;
-			String command = "SELECT type,duration FROM  appointment_types,advisor_settings WHERE appointment_types.userid=advisor_settings.userid AND advisor_settings.pname=?";
+			String command = "SELECT type,duration,user.email FROM  appointment_types,advisor_settings,user WHERE appointment_types.userid=advisor_settings.userid AND advisor_settings.userid=user.userid AND advisor_settings.pname=?";
 			statement = conn.prepareStatement(command);
 			statement.setString(1,pname);
 			ResultSet rs = statement.executeQuery();
@@ -400,6 +365,7 @@ public class RDBImpl implements DBImplInterface{
 				AppointmentType at = new AppointmentType();
 				at.setType(rs.getString(1));
 				at.setDuration(rs.getInt(2));
+				at.setEmail(rs.getString(3));
 				ats.add(at);
 			}
 			conn.close();
@@ -432,6 +398,36 @@ public class RDBImpl implements DBImplInterface{
 			System.out.println(ex);
 		}
 		return app;
+	}
+	
+	public Boolean createAdvisor(CreateAdvisorBean ca){
+	try{
+		SQLCmd cmd = new CreateAdvisor(ca);
+		cmd.execute();
+		if ((Boolean)cmd.getResult().get(0)){
+			cmd = new GetUserID(ca.getEmail());
+			cmd.execute();
+			cmd = new CreateInitialAdvisorSettings((int)cmd.getResult().get(0),ca);
+			cmd.execute();
+			return (Boolean)cmd.getResult().get(0);
+		}
+		else{
+			return false;
+		}
+			
+	}
+	catch(Exception e){
+		return false;
+	}
+	}
+	
+	public String addAppointmentType(AdvisorUser user, AppointmentType at){
+		String msg = null;
+		SQLCmd cmd = new GetUserID(user.getEmail());
+		cmd.execute();
+		cmd = new AddAppointmentType(at, (int)cmd.getResult().get(0));
+		cmd.execute();
+		return (String)cmd.getResult().get(0);
 	}
 }
 

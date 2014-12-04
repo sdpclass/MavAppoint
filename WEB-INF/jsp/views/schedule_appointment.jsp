@@ -1,4 +1,11 @@
 <jsp:include page='<%=(String) request.getAttribute("includeHeader")%>' />
+<%@ page import= "uta.mav.appoint.login.LoginUser" %>
+			<%@ page import= "uta.mav.appoint.login.AdminUser" %>
+			<%@ page import= "uta.mav.appoint.login.AdvisorUser" %>
+			<%@ page import= "uta.mav.appoint.login.StudentUser" %>
+			<%@ page import= "uta.mav.appoint.login.FacultyUser" %>
+			
+			<% LoginUser user = (LoginUser)session.getAttribute("user"); %>
 		<div class="input-group-btn">
 		<%@ page import= "uta.mav.appoint.beans.AppointmentType" %>
 		<% ArrayList<AppointmentType> ats = (ArrayList<AppointmentType>)session.getAttribute("appointmenttypes");
@@ -8,7 +15,7 @@
 			</button>
 		<ul class="dropdown-menu" role="menu">
 			<%for (int i=0;i<ats.size();i++){
-				%><li><a href="?apptype=<%=ats.get(i).getType()%>&pname=<%=request.getParameter("pname")%>&id1=<%=request.getParameter("id1")%>&duration=<%=ats.get(i).getDuration()%>"><%=ats.get(i).getType()%></a></li> <%
+				%><li><a href="?apptype=<%=ats.get(i).getType()%>&pname=<%=request.getParameter("pname")%>&advisor_email=<%=ats.get(0).getEmail()%>&id1=<%=request.getParameter("id1")%>&duration=<%=ats.get(i).getDuration()%>"><%=ats.get(i).getType()%></a></li> <%
 			}
 		}%>
 		</ul>
@@ -39,8 +46,12 @@
 		    							document.getElementById("apptype").value = '<%=request.getParameter("apptype")%>';
 		    							document.getElementById("duration").value = '<%=request.getParameter("duration")%>';
 		    							document.getElementById("pname").value = '<%=request.getParameter("pname")%>';
+		    							document.getElementById("advisor_email").value = '<%=request.getParameter("advisor_email")%>';
 		    							document.getElementById("start").value = event.start;
 		    							document.getElementById("end").value = event.end;
+		    							document.getElementById("starttime").value = event.start.format();
+		    							document.getElementById("endtime").value = event.end.format();
+		    							
 		    							$('#addApptModal').modal();
 		    							},
 		    					events: [
@@ -63,8 +74,12 @@
 						<input type="hidden" name=apptype id="apptype">
 						<input type="hidden" name=start id="start">
 						<input type="hidden" name=end id="end">
+						<input type="hidden" name=starttime id="starttime">
+						<input type="hidden" name=endtime id="endtime">
 						<input type="hidden" name=pname id="pname">
 						<input type="hidden" name=duration id="duration">
+						<input type="hidden" name=advisor_email id="advisor_email">
+						Email address: <br><input type="text" name="email" id="email" value="<%= user.getEmail()%>"><br>
 						UTA Student ID: <br><input type="text" name="studentid"> <br>
 						Description: <br><textarea rows=4 columns="10" name="description"></textarea>
 				</div>
@@ -72,11 +87,35 @@
 					<button type="button" class="btn btn-default"
 						data-dismiss="modal"> Close 
 					</button>
-					<input type="submit" value="Submit">
+					<input type="submit" value="Submit" onclick="javascript:FormSubmit();">
 				</div>
 			</div>
 		</div>
 	</div>
 	</form>
-	
+<style>
+	#calendar{
+	background-color: white;
+	}
+</style>	
+<script> function FormSubmit(){
+									var student_email = document.getElementById("email").value;
+									var advisor_email = document.getElementById("advisor_email").value;
+									var starttime = document.getElementById("starttime").value;
+									var endtime = document.getElementById("endtime").value;
+									var params = ('student_email='+student_email+'&advisor_email='+advisor_email+'&starttime='+starttime+'&endtime='+endtime);
+									var xmlhttp;
+									xmlhttp = new XMLHttpRequest();
+									xmlhttp.onreadystatechange=function(){
+										
+									}
+									xmlhttp.open("POST","mail",true);
+									xmlhttp.setRequestHeader("Content-type","application/x-www-form-urlencoded");
+									xmlhttp.setRequestHeader("Content-length",params.length);
+									xmlhttp.setRequestHeader("Connection","close");
+									xmlhttp.send(params);
+									alert("Meeting request sent.");
+								}
+								</script>
+
 <%@include file="templates/footer.jsp" %>

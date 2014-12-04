@@ -6,6 +6,7 @@
     margin: 5% 0;
     box-shadow: 3px 3px 2px #ccc;
     transition: 0.5s;
+    background-color:#e67e22;
     }
 .custab:hover{
     box-shadow: 3px 3px 0px transparent;
@@ -31,6 +32,7 @@
 			<th>Advising Email</th>
 			<th>Description</th>
 			<th>UTA Student ID</th>
+            <th>Student Email</th>
             <th class="text-center">Action</th>
         </tr>
     </thead>
@@ -49,8 +51,10 @@
 								<td><%=array.get(i).getAdvisorEmail()%></td>
 								<td><%=array.get(i).getDescription() %></td>
 								<td><%=array.get(i).getStudentid()%></td>
+								<td><%=array.get(i).getStudentEmail()%></td>
 								<td class="text-center"><button type="button" id=button1<%=i%> onclick="button<%=i%>()">Cancel</button></td>
 								<td class="text-center"><button type="button" id=button2_<%=i%> onclick="button_<%=i%>()">Edit</button></td>
+								<td class="text-center"><button type="button" id=button3_<%=i%> onclick="button__<%=i%>()">Email</button></td>
 							</tr>
 								<script> function button<%=i%>(){
 										document.getElementById("cancel_button").value = "<%=array.get(i).getAppointmentId()%>"; 
@@ -68,7 +72,30 @@
 										document.getElementById("description").value = "<%=array.get(i).getDescription()%>";
 										$('#addApptModal').modal();
 								}</script>
-								
+								<script> function button__<%=i%>(){
+										document.getElementById("to").value = "<%=array.get(i).getStudentEmail()%>";
+										$('#emailModal').modal();
+								}</script>
+								<script> function emailSend(){
+									var to = document.getElementById("to").value;
+									var body = document.getElementById("email").value;
+									var subject = document.getElementById("subject").value;
+									var params = ('to='+to+'&body='+body+'&subject='+subject);
+									var xmlhttp;
+									xmlhttp = new XMLHttpRequest();
+									xmlhttp.onreadystatechange=function(){
+										if (xmlhttp.readyState==4){
+											alert("Email sent.");	
+											return false;
+										}
+									}
+									xmlhttp.open("POST","notify",true);
+									xmlhttp.setRequestHeader("Content-type","application/x-www-form-urlencoded");
+									xmlhttp.setRequestHeader("Content-length",params.length);
+									xmlhttp.setRequestHeader("Connection","close");
+									xmlhttp.send(params);
+								}
+								</script>
 								</div>
 						<%	}
 		    			}
@@ -105,7 +132,28 @@
 		</div>
 	</div>
 	</form>
-
+<form name=emailSubmit onsubmit="return emailSend()">
+<div class="modal fade" id="emailModal" tabindex="-1">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h4 class="modal-title">Send message</h4>
+				</div>
+				<div class="modal-body">
+						<b>Subject:</b><br><input type=text name=subject id="subject"><br>
+						<b>Message:</b><br><textarea rows=4 columns="10" name=email id="email"></textarea><br>
+						<input type=hidden name=to id="to"><br>
+						</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-default"
+						data-dismiss="modal"> Close 
+					</button>
+					<input type="submit" value="Submit">
+				</div>
+			</div>
+		</div>
+	</div>
+</form>
 <script>
 function validate(){
 		return confirm('Are you sure you want to delete this appointment?');	

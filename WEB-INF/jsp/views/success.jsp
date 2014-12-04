@@ -4,6 +4,6 @@
 </head>
 <body>
 <h1> Success! </h1>
-<br> <h3> Redirecting...</h3>
+<br> <h3> Sending back to previous page...</h3>
 </body>
 </html>

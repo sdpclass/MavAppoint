@@ -17,7 +17,7 @@ public class Appointment implements Serializable{
 	String description;
 	String studentid;
 	int appointmentId;
-	
+	String studentEmail;
 	/**
 	 * @return the pname
 	 */
@@ -131,5 +131,17 @@ public class Appointment implements Serializable{
 	 */
 	public void setStudentid(String studentid) {
 		this.studentid = studentid;
+	}
+	/**
+	 * @return the studentEmail
+	 */
+	public String getStudentEmail() {
+		return studentEmail;
+	}
+	/**
+	 * @param studentEmail the studentEmail to set
+	 */
+	public void setStudentEmail(String studentEmail) {
+		this.studentEmail = studentEmail;
 	}
 }

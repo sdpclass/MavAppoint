@@ -9,6 +9,7 @@ public class AppointmentType implements Serializable{
 	private static final long serialVersionUID = 6325941024133099928L;
 	String type;
 	int duration;
+	String email;
 	/**
 	 * @return the type
 	 */
@@ -32,5 +33,17 @@ public class AppointmentType implements Serializable{
 	 */
 	public void setDuration(int duration) {
 		this.duration = duration;
+	}
+	/**
+	 * @return the email
+	 */
+	public String getEmail() {
+		return email;
+	}
+	/**
+	 * @param email the email to set
+	 */
+	public void setEmail(String email) {
+		this.email = email;
 	}
 }

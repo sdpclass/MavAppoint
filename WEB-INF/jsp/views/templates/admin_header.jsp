@@ -1,7 +1,7 @@
 <%@include file="top_header.jsp" %>
 			<div id="navbar">
 				<ul class="nav navbar-nav">
-				<li><a href="#"> Add New Advisor </a></li>
+				<li><a href="create_advisor"> Add New Advisor </a></li>
 				<li><a href="appointments">Show Appointments</a></li>
 				<li><a href="#"> Suspend/Delete Advisor </a></li>
 				<li><a href="#"> Customize Department</a></li>

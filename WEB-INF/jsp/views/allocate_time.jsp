@@ -10,8 +10,7 @@
 		<!--  begin processing schedules -->
 		<% ArrayList<TimeSlotComponent> schedules = (ArrayList<TimeSlotComponent>)session.getAttribute("schedules");
 		   ArrayList<Appointment> appointments = (ArrayList<Appointment>)session.getAttribute("appointments");
-		    			if (schedules != null){%>
-		    				<script>
+		    				%><script>
 		    				$(document).ready(function(){
 		    					$('#calendar').fullCalendar({
 		    						header: {
@@ -33,7 +32,9 @@
 		    						dayClick: function(date,jsEvent,view){
 		    							document.getElementById("opendate").value = date.format('YYYY-MM-DD');
 		    							$("#addTimeSlotModal").modal();
-		    						},
+		    						}
+		    		    			<%if (schedules != null){%>
+		    						,
 		    						eventClick: function(event,element){
 		    							if (event.id > 0){
 		    							document.getElementById("StartTime2").value = event.start.format('HH:mm');
@@ -70,35 +71,36 @@
  											<%if(i != (appointments.size()-1)){%>,<%}
  										}
 									}%>		 					 
-		 					 			]
+		 					 			]<%}%>
 		    					});
 		    				});
 	 						</script>	
-		 						<%}%>
+		 						
 
-	<form name=addTimeSlot action="availability" method="post">
+	<form name=addTimeSlot action="availability" method="post" onsubmit="return false;">
 	<div class="modal fade" id="addTimeSlotModal" tabindex="-1">
 		<div class="modal-dialog">
 			<div class="modal-content">
 				<div class="modal-header">
-					<h4 class="modal-title" id=addTimeSlotLabel">Add Time Slots</h4>
+					<h4 class="modal-title" id="addTimeSlotLabel">Add Time Slots</h4>
 				</div>
 				<div class="modal-body">
-						<label for="StartTime">Start Time:</label>
-		 				<input type="time" class="form-control" name=StartTime step="300">
-		 				<label for="EndTime">End Time:</label>
-		 				<input type="time" class="form-control" name=EndTime step="300">
-		 				<label for="Date">Date:</label>
+						<label for="starttime">Start Time:</label>
+		 				<input type="time" class="form-control" name=starttime id="starttime" step="300">
+		 				<label for="tndtime">End Time:</label>
+		 				<input type="time" class="form-control" name=endtime id="endtime" step="300">
+		 				<label for="opendate">Date:</label>
 		 				<input type="text" class="form-control" name=opendate id="opendate">
-		 				<label for="Repeat">Weekly repeat duration:</label>
-						<input type="text" class="form-control" name=Repeat
+		 				<label for="repeat">Weekly repeat duration:</label>
+						<input type="text" class="form-control" name=repeat id="repeat"
 						value="0">
+						<label id="result"><font style="color:#e67e22" size="4"></label>
 				</div>
 				<div class="modal-footer">
 					<button type="button" class="btn btn-default"
 						data-dismiss="modal"> Close 
 					</button>
-					<input type="submit" value="Submit">
+					<input type="submit" value="submit" onclick="javascript:FormSubmit();">
 				</div>
 			</div>
 		</div>
@@ -130,9 +132,36 @@
 		</div>
 	</div>
 	</form>
+	<script> function FormSubmit(){
+									var starttime = document.getElementById("starttime").value;
+									var endtime = document.getElementById("endtime").value;
+									var date = document.getElementById("opendate").value;
+									var repeat = document.getElementById("repeat").value;
+									var params = ('starttime='+starttime+'&endtime='+endtime+'&opendate='+date+'&repeat='+repeat);
+									var xmlhttp;
+									xmlhttp = new XMLHttpRequest();
+									xmlhttp.onreadystatechange=function(){
+										if (xmlhttp.readyState==4){
+											document.getElementById("result").innerHTML = xmlhttp.responseText;	
+										}
+									}
+									xmlhttp.open("POST","availability",true);
+									xmlhttp.setRequestHeader("Content-type","application/x-www-form-urlencoded");
+									xmlhttp.setRequestHeader("Content-length",params.length);
+									xmlhttp.setRequestHeader("Connection","close");
+									xmlhttp.send(params);
+									document.getElementById("result").innerHTML = "Attempting to add time slot...";
+								}
+
+					</script>
 	<script>
 	function validate(){
 		return confirm('Are you sure you want to delete?');	
 	}
 	</script>
+<style>
+	#calendar{
+		background-color: white;
+	}
+</style>
 <%@include file="templates/footer.jsp" %>

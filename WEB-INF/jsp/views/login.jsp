@@ -33,7 +33,7 @@
 								<div class="row">
 									<div class="center-block">
 										<img class="profile-img"
-											src="https://lh5.googleusercontent.com/-b0-k99FZlyE/AAAAAAAAAAI/AAAAAAAAAAA/eu7opA4byxI/photo.jpg?sz=120" alt="">
+											src="img/mavblue.jpg" alt="">
 									</div>
 								</div>
 								<div class="row">

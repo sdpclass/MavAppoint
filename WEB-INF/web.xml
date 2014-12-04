@@ -7,6 +7,14 @@
       <res-auth>Container</res-auth>
       <res-sharing-scope>Shareable</res-sharing-scope>
   </resource-ref>
+  <filter>
+      <filter-name>CorseFilter</filter-name>
+      <filter-class>org.apache.catalina.filters.CorsFilter</filter-class>
+  </filter>
+  <filter-mapping>
+      <filter-name>CorseFilter</filter-name>
+      <url-pattern>/*</url-pattern>
+  </filter-mapping>
   <servlet>
       <servlet-name>IndexServlet</servlet-name>
       <servlet-class>uta.mav.appoint.IndexServlet</servlet-class>
@@ -95,7 +103,6 @@
       <servlet-name>ManageTimeSlotServlet</servlet-name>
       <url-pattern>/ts-manage</url-pattern>
   </servlet-mapping>
-  
   	<servlet>
       <servlet-name>SendEmailServlet</servlet-name>
       <servlet-class>uta.mav.appoint.SendEmailServlet</servlet-class>
@@ -104,4 +111,30 @@
       <servlet-name>SendEmailServlet</servlet-name>
       <url-pattern>/notify</url-pattern>
   </servlet-mapping>
+  <servlet>
+      <servlet-name>SendMeetingServlet</servlet-name>
+      <servlet-class>uta.mav.appoint.SendMeetingServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+      <servlet-name>SendMeetingServlet</servlet-name>
+      <url-pattern>/mail</url-pattern>
+  </servlet-mapping>
+<servlet>
+      <servlet-name>CreateAdvisorServlet</servlet-name>
+      <servlet-class>uta.mav.appoint.CreateAdvisorServlet</servlet-class>
+  </servlet>
+   <servlet-mapping>
+      <servlet-name>CreateAdvisorServlet</servlet-name>
+      <url-pattern>/create_advisor</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping>
+      <servlet-name>AddAppointmentServlet</servlet-name>
+      <url-pattern>/add_app_type</url-pattern>
+  </servlet-mapping>
+<servlet>
+      <servlet-name>AddAppointmentServlet</servlet-name>
+      <servlet-class>uta.mav.appoint.AddAppointmentServlet</servlet-class>
+  </servlet>
+ 
+  
 </web-app>

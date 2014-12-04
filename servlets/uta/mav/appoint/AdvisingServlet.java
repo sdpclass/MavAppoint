@@ -28,46 +28,42 @@ public class AdvisingServlet extends HttpServlet{
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		session = request.getSession();
 		LoginUser user = (LoginUser)session.getAttribute("user");
-		if (user != null){
-			try{
-					header = "templates/" + user.getHeader() + ".jsp";
-					//must be logged in to see advisor schedules - safety concern
-					DatabaseManager dbm = new DatabaseManager();
-					ArrayList<String> array =  dbm.getAdvisors();
-					if (array.size() != 0){
-						session.setAttribute("advisors", array);
-					}
-					else{
-						//no advisors for department?
-					}
-					ArrayList<TimeSlotComponent> schedules = dbm.getAdvisorSchedule("all");
-					if (schedules.size() != 0){
-						session.setAttribute("schedules", schedules);
-					}
-					ArrayList<Appointment> appointments = dbm.getAppointments(user);
-					if (appointments.size() != 0){
-						session.setAttribute("appointments", appointments);
-					}
-			}
-			catch(Exception e){
-				
-			}
+		if (user == null){
+			user = new LoginUser();
+			session.setAttribute("user", user);
 		}
-		else{
-			header = "templates/header.jsp";
+		try{
+				header = "templates/" + user.getHeader() + ".jsp";
+				//must be logged in to see advisor schedules - safety concern
+				DatabaseManager dbm = new DatabaseManager();
+				ArrayList<String> array =  dbm.getAdvisors();
+				if (array.size() != 0){
+					session.setAttribute("advisors", array);
+				}
+				ArrayList<TimeSlotComponent> schedules = dbm.getAdvisorSchedule("all");
+				if (schedules.size() != 0){
+					session.setAttribute("schedules", schedules);
+				}
+				ArrayList<Object> appointments = dbm.getAppointments(user);
+				if (appointments.size() != 0){
+					session.setAttribute("appointments", appointments);
+				}
+		}
+		catch(Exception e){
+			
 		}
 		request.setAttribute("includeHeader", header);
 		request.getRequestDispatcher("/WEB-INF/jsp/views/advising.jsp").forward(request, response);
 	}
 
-
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		session = request.getSession();
 		LoginUser user = (LoginUser)session.getAttribute("user");
-		if (user != null){
-			try{
+		if (user == null){
+			user = new LoginUser();
+		}
+		try{
 					header = "templates/" + user.getHeader() + ".jsp";
-					//must be logged in to see advisor schedules - safety concern
 					DatabaseManager dbm = new DatabaseManager();
 					ArrayList<String> array =  dbm.getAdvisors();
 					if (array.size() != 0){
@@ -85,13 +81,9 @@ public class AdvisingServlet extends HttpServlet{
 					if (schedule.size() != 0){
 						session.setAttribute("schedules", schedule);
 					}
-				}
-			catch(Exception e){
-				System.out.printf(e.toString());
-			}
 		}
-		else{
-			header = "templates/header.jsp";
+		catch(Exception e){
+			System.out.printf(e.toString());
 		}
 		request.setAttribute("includeHeader", header);
 		request.getRequestDispatcher("/WEB-INF/jsp/views/advising.jsp").forward(request, response);

@@ -1,4 +1,6 @@
 <jsp:include page='<%=(String) request.getAttribute("includeHeader")%>' />
+<% ArrayList<String> array = (ArrayList<String>)session.getAttribute("advisors");
+	if (array != null){ %>	    		
 <div class="container">
 	<div class="page-header">
 		<div class="pull-right form-inline">
@@ -8,8 +10,6 @@
 		    		<%@ page import= "java.util.ArrayList" %>
 		    		
 		    		<!-- begin processing advisors  -->
-		    		<% ArrayList<String> array = (ArrayList<String>)session.getAttribute("advisors");
-		    			if (array != null){ %>
 		    				<button type="button" id="all1" onclick="alladvisors()">All</button>
 		    				<script> function alladvisors(){
 		    							document.getElementById("advisor_button").value = "all";
@@ -22,17 +22,17 @@
 										document.getElementById("advisor_button").value = "<%=array.get(i)%>";
 										advisor_form.submit();
 								}</script>
-						<%	}
-		    			} 
-		    			else{%>
-		    				<label> Log in to see Advisor schedules. </label>
-					 <% } %>
-					 <!-- end processing advisors -->	 
-					</form>
-
+						<%	}%>
+				</form>
 			</div>
 		</div>
 	</div>
+	<%} 
+		 else{%>
+		    <label><font color="#e67e22" size="5"> Log in to see Advisor schedules. </label>
+			<% } %>
+					 <!-- end processing advisors -->	 
+	
 	<div class="date-display span12">
 		<h3></h3>
 	</div>
@@ -47,8 +47,7 @@
 		<!--  begin processing schedules -->
 		<% ArrayList<TimeSlotComponent> schedules = (ArrayList<TimeSlotComponent>)session.getAttribute("schedules");
 		   ArrayList<Appointment> appointments = (ArrayList<Appointment>)session.getAttribute("appointments");
-		    			if (schedules != null){%>
-		    				<script>
+		    				%><script>
 		    				$(document).ready(function(){
 		    					$('#calendar').fullCalendar({
 		    						header: {
@@ -60,9 +59,11 @@
 		    							month: true,
 		    							basicWeek: true,
 		    							'default' : true,
-		    						},
+		    						}
+		    						<%if (schedules != null){%>
+		    				    	,
 		    						eventClick: function(event,element){
-		    							if (event.id > 0){
+		    							if (event.id >= 0){
 		    							document.getElementById("id1").value = event.id;
 		    							document.getElementById("pname").value = event.title;
 		    							addAppt.submit();
@@ -84,26 +85,27 @@
 		 								<%if(i != (schedules.size()-1)||appointments != null){%>,<%}%>
 		 					 		<%}	
 									if (appointments != null){
-										for(i=0;i<appointments.size();i++){%>
+										for(i=1;i<1+appointments.size();i++){%>
 		 									{
- 												title:'<%=appointments.get(i).getAppointmentType()%>',
- 												start:'<%=appointments.get(i).getAdvisingDate()+"T"+appointments.get(i).getAdvisingStartTime()%>',
- 												end:'<%=appointments.get(i).getAdvisingDate()+"T"+appointments.get(i).getAdvisingEndTime()%>',
+ 												title:'<%=appointments.get(i-1).getAppointmentType()%>',
+ 												start:'<%=appointments.get(i-1).getAdvisingDate()+"T"+appointments.get(i-1).getAdvisingStartTime()%>',
+ 												end:'<%=appointments.get(i-1).getAdvisingDate()+"T"+appointments.get(i-1).getAdvisingEndTime()%>',
  												id:<%=-i%>,
  												backgroundColor: 'orange'
  											}
- 											<%if(i != (appointments.size()-1)){%>,<%}
+ 											<%if(i != appointments.size()){%>,<%}
  										}
 									}%>		 					 
-		 					 			]
+		 					 			]<%}%>
 		    					});
 		    				});
 	 						</script>	
-		 						<%}%>
+		 						
 
 	<form name=addAppt action="schedule" method="get">
 		<input type="hidden" name=id1 id="id1">
 		<input type="hidden" name=pname id="pname">
+		<input type="hidden" name=advisor_email id="advisor_email">
 	</form>		 							
 	
 	<form name=updateAppt action="appointments" method="get">
@@ -111,4 +113,9 @@
   	
 	<br/><br/><hr>
 </div>
+<style>
+	#calendar {
+		background-color: white;
+	}
+</style>
 <%@include file="templates/footer.jsp" %>

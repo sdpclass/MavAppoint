@@ -54,6 +54,7 @@ public class LoginServlet extends HttpServlet {
 			}
 		}
 		catch(Exception e){
+			System.out.println(e);
 			response.sendRedirect("login");
 		}
 	}

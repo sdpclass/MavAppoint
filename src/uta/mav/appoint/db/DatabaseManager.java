@@ -7,6 +7,7 @@ import uta.mav.appoint.TimeSlotComponent;
 import uta.mav.appoint.beans.AllocateTime;
 import uta.mav.appoint.beans.Appointment;
 import uta.mav.appoint.beans.AppointmentType;
+import uta.mav.appoint.beans.CreateAdvisorBean;
 import uta.mav.appoint.beans.GetSet;
 import uta.mav.appoint.login.AdminUser;
 import uta.mav.appoint.login.AdvisorUser;
@@ -20,6 +21,10 @@ public class DatabaseManager {
 			
 	//user login checking, check username and password against database
 	//then return role if a match is found
+	public Boolean createAdvisor(CreateAdvisorBean ca) throws SQLException{
+		return imp.createAdvisor(ca);
+	}
+		
 	public LoginUser checkUser(GetSet set) throws SQLException{
 		return imp.checkUser(set);
 		}
@@ -40,7 +45,7 @@ public class DatabaseManager {
 		return imp.createAppointment(a,email);
 	}
 
-	public ArrayList<Appointment> getAppointments(LoginUser user) throws SQLException{
+	public ArrayList<Object> getAppointments(LoginUser user) throws SQLException{
 		if (user instanceof AdvisorUser){
 			return imp.getAppointments((AdvisorUser)user);
 		}
@@ -58,7 +63,7 @@ public class DatabaseManager {
 		return imp.cancelAppointment(id);
 	}
 	
-	public Boolean addTimeSlot(AllocateTime at) throws SQLException{
+	public String addTimeSlot(AllocateTime at) throws SQLException{
 		return imp.addTimeSlot(at);
 	}
 	
@@ -76,6 +81,10 @@ public class DatabaseManager {
 
 	public Appointment getAppointment(String date, String email) throws SQLException{
 		return imp.getAppointment(date,email);
+	}
+
+	public String addAppointmentType(AdvisorUser user, AppointmentType at) throws SQLException{
+		return imp.addAppointmentType(user, at);
 	}
 }
 

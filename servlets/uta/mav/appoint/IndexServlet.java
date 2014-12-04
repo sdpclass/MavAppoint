@@ -12,9 +12,9 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import uta.mav.appoint.beans.Appointment;
-import uta.mav.appoint.db.DatabaseManager;
 import uta.mav.appoint.login.LoginUser;
-import uta.mav.appoint.login.StudentUser;
+import uta.mav.appoint.visitor.GetNextAppointmentVisitor;
+import uta.mav.appoint.visitor.Visitor;
 
 /**
  * Servlet implementation class IndexServlet
@@ -28,30 +28,26 @@ public class IndexServlet extends HttpServlet{
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		session = request.getSession();
-		LoginUser user;
-		try{
-			user = (StudentUser)session.getAttribute("user");
-		}
-		catch(Exception e){
-			user = (LoginUser)session.getAttribute("user");
-				
-		}
+		LoginUser user = (LoginUser)session.getAttribute("user");
 		if (user != null){
 			try{
 				header = "templates/" + user.getHeader() + ".jsp";
-			if (user instanceof StudentUser){
-				DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-				Date date = new Date();
-				DatabaseManager dbm = new DatabaseManager();
-				Appointment app = dbm.getAppointment(dateFormat.format(date),user.getEmail());
-				session.setAttribute("studentapp",app);
-			}
+				String date =  new SimpleDateFormat("yyyy-MM-dd").format(new Date());
+				Visitor v = new GetNextAppointmentVisitor();
+				Appointment app = (Appointment)(user.accept(v,(Object)date)).get(0);
+				if (app != null){
+					session.setAttribute("studentapp",app);
+				}
 			}
 			catch(Exception e){
-				System.out.println(e);
+				System.out.println("Index error : " + e);
 			}
 		}
 		else{
+			if (user == null){
+				user = new LoginUser();
+				session.setAttribute("user", user);
+			}
 			header = "templates/header.jsp";
 		}
 		

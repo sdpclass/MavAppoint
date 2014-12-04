@@ -1,7 +1,7 @@
 <%@include file="top_header.jsp" %>
 			<div>
 				<ul class="nav navbar-nav">
-				<li><a href="advising"> Advising </a></li>
+				<li><a href="advising">Advising </a></li>
 				</ul>
 				<ul class="nav navbar-nav navbar-right">
 				
