@@ -1,6 +1,7 @@
 package uta.mav.appoint;
 
 import java.io.IOException;
+import java.rmi.server.UID;
 import java.util.ArrayList;
 
 import javax.servlet.ServletException;
@@ -60,9 +61,15 @@ public class ScheduleAppointmentServlet extends HttpServlet{
 			parts = parts[4].split(":");
 			a.setAdvisingStartTime(parts[0] + ":" + parts[1]);
 			a.setAdvisingEndTime(addTime(parts[0],parts[1],d));
+			a.setUid(new UID());
+			
 			String email = request.getParameter("email");
+			
+			
 			DatabaseManager dbm = new DatabaseManager();
 			Boolean result = dbm.createAppointment(a,email);
+			
+			
 			if (result == true){
 				response.setHeader("Refresh","2; URL=advising");
 				request.getRequestDispatcher("/WEB-INF/jsp/views/success.jsp").forward(request,response);

@@ -1,6 +1,7 @@
 package uta.mav.appoint.beans;
 
 import java.io.Serializable;
+import java.rmi.server.UID;
 
 public class Appointment implements Serializable{
 
@@ -18,6 +19,8 @@ public class Appointment implements Serializable{
 	String studentid;
 	int appointmentId;
 	String studentEmail;
+	UID uid;
+	
 	/**
 	 * @return the pname
 	 */
@@ -143,5 +146,11 @@ public class Appointment implements Serializable{
 	 */
 	public void setStudentEmail(String studentEmail) {
 		this.studentEmail = studentEmail;
+	}
+	public UID getUid() {
+		return uid;
+	}
+	public void setUid(UID uid) {
+		this.uid = uid;
 	}
 }

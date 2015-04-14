@@ -81,7 +81,7 @@
 						<input type="hidden" name=advisor_email id="advisor_email">
 						Email address: <br><input type="text" name="email" id="email" value="<%= user.getEmail()%>"><br>
 						UTA Student ID: <br><input type="text" name="studentid"> <br>
-						Description: <br><textarea rows=4 columns="10" name="description"></textarea>
+						Description: <br><textarea rows="4" columns="10" name="description"></textarea>
 				</div>
 				<div class="modal-footer">
 					<button type="button" class="btn btn-default"

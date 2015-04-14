@@ -1,7 +1,6 @@
 package uta.mav.appoint;
 
 import java.io.IOException;
-import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -12,6 +11,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import uta.mav.appoint.beans.Appointment;
+import uta.mav.appoint.helpers.Authentication;
 import uta.mav.appoint.login.LoginUser;
 import uta.mav.appoint.visitor.GetNextAppointmentVisitor;
 import uta.mav.appoint.visitor.Visitor;
@@ -29,6 +29,7 @@ public class IndexServlet extends HttpServlet{
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		session = request.getSession();
 		LoginUser user = (LoginUser)session.getAttribute("user");
+		Authentication.getUserNameInstance();
 		if (user != null){
 			try{
 				header = "templates/" + user.getHeader() + ".jsp";

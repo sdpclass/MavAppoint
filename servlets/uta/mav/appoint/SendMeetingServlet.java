@@ -2,7 +2,11 @@ package uta.mav.appoint;
 
 import java.io.IOException;
 import java.rmi.server.UID;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.Properties;
+
 import javax.activation.DataHandler;
 import javax.mail.BodyPart;
 import javax.mail.Message;
@@ -95,8 +99,14 @@ public class SendMeetingServlet extends HttpServlet{
 			message.setFrom(new InternetAddress(from));   
 			message.addRecipient(Message.RecipientType.TO, new InternetAddress(to));
 			message.addRecipient(Message.RecipientType.TO, new InternetAddress(advisor_email));
-			message.setSubject("Meeting Request from Maverick Appointments");  
-			StringBuffer sb = new StringBuffer();    
+			message.setSubject(to + " has scheduled an appointment.");
+			
+			//create current date in proper format
+			DateFormat df = new SimpleDateFormat("yyyyMMdd");
+			DateFormat df2 = new SimpleDateFormat("HHmmss");
+			Date d = new Date();
+			String dffinal = df.format(d)+"T"+df2.format(d);
+			StringBuffer sb = new StringBuffer();
 			StringBuffer buffer = sb.append(
 					"BEGIN:VCALENDAR\r\n"+
 							"PRODID:-//Microsoft Corporation//Outlook 9.0 MIMEDIR//EN\r\n"+  
@@ -126,7 +136,7 @@ public class SendMeetingServlet extends HttpServlet{
 								"TRANSP:OPAQUE\r\n" +  
 								"SEQUENCE:0\r\n" +  
 								"UID:"+uid+"\r\n"+ 
-								"DTSTAMP:20141118T120102\r\n" +   
+								"DTSTAMP:" + dffinal + "\r\n" +   
 								"CATEGORIES:Meeting\r\n" +  
 								"DESCRIPTION: " + description + "\r\n" +  
 								"SUMMARY: " + summary + "\r\n" +   
