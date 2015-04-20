@@ -25,6 +25,8 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import uta.mav.appoint.helpers.Authentication;
+
 
 public class SendMeetingServlet extends HttpServlet{
   
@@ -32,7 +34,7 @@ public class SendMeetingServlet extends HttpServlet{
 	 * 
 	 */
 	private static final long serialVersionUID = -5280170396166375849L;
-
+	
 
 	
 	/*
@@ -51,8 +53,8 @@ public class SendMeetingServlet extends HttpServlet{
 	 */
 	public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException{
 		try {  
-			String from = "maverickappointments@gmail.com";
-			String pw = "gue#212!ns";
+			String from = Authentication.getUserNameInstance();
+			String pw = Authentication.getUserPasswordInstance();
 			String host = "smtp.gmail.com";
 			String port = "465";
 			String to = request.getParameter("student_email");
@@ -87,7 +89,7 @@ public class SendMeetingServlet extends HttpServlet{
 			Session session = Session.getDefaultInstance(properties,
 					new javax.mail.Authenticator(){
 						protected PasswordAuthentication getPasswordAuthentication(){
-							return new PasswordAuthentication("maverickappointments@gmail.com","gue#212!ns");
+							return new PasswordAuthentication(Authentication.getUserNameInstance(),Authentication.getUserPasswordInstance());
 						}
 			});
 		

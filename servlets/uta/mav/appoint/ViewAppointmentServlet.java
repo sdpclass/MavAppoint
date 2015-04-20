@@ -4,13 +4,11 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 import javax.servlet.ServletException;
-import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import uta.mav.appoint.db.DatabaseManager;
 import uta.mav.appoint.login.LoginUser;
 import uta.mav.appoint.visitor.AppointmentVisitor;
 import uta.mav.appoint.visitor.CancelAppointmentVisitor;
@@ -19,7 +17,6 @@ import uta.mav.appoint.visitor.Visitor;
 /**
  * Servlet implementation class ViewAppointmentServlet
  */
-@WebServlet("/ViewAppointmentServlet")
 public class ViewAppointmentServlet extends HttpServlet{
 	private static final long serialVersionUID = 1L;
     HttpSession session;   

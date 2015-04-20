@@ -16,6 +16,7 @@ import uta.mav.appoint.beans.CreateAdvisorBean;
 import uta.mav.appoint.beans.GetSet;
 import uta.mav.appoint.db.command.AddAppointmentType;
 import uta.mav.appoint.db.command.AddTimeSlot;
+import uta.mav.appoint.db.command.CancelAppointment;
 import uta.mav.appoint.db.command.CheckTimeSlot;
 import uta.mav.appoint.db.command.CheckUser;
 import uta.mav.appoint.db.command.CreateAdvisor;
@@ -304,37 +305,11 @@ public class RDBImpl implements DBImplInterface{
 		return appointments;
 	}
 	
-	public Boolean cancelAppointment(int id){
-		Boolean result = false;
-		try{
-			Connection conn = this.connectDB();
-			PreparedStatement statement;
-			String command = "SELECT count(*),advising_date,advising_starttime, advising_endtime from appointments where id=?";
-			statement=conn.prepareStatement(command);
-			statement.setInt(1,id);
-			ResultSet rs = statement.executeQuery();
-			while(rs.next()){
-				if (rs.getInt(1) == 1){
-					command = "DELETE FROM appointments where id=?";
-					statement=conn.prepareStatement(command);
-					statement.setInt(1, id);
-					statement.executeUpdate();
-					command = "UPDATE advising_schedule SET studentid=null where advising_date=? AND advising_starttime >=? AND advising_endtime <=?";
-					statement=conn.prepareStatement(command);
-					statement.setString(1, rs.getString(2));
-					statement.setString(2,rs.getString(3));
-					statement.setString(3, rs.getString(4));
-					statement.executeUpdate();
-					result = true;
-				}
-			}
-			conn.close();	
-		}
-		catch(SQLException e){
-			System.out.printf("Error in Database: " + e.toString());
-			return false;
-		}
-		return result;
+	public String cancelAppointment(int id){
+		SQLCmd cmd = new CancelAppointment(id);
+		cmd.execute();
+		String res = (String)cmd.getResult().get(0);
+		return res;
 	}
 	
 	public String addTimeSlot(AllocateTime at){

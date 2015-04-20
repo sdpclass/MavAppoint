@@ -16,7 +16,7 @@ import uta.mav.appoint.login.LoginUser;
 import uta.mav.appoint.login.StudentUser;
 
 public interface DBImplInterface {
-	public Boolean cancelAppointment(int id) throws SQLException;
+	public String cancelAppointment(int id) throws SQLException;
 	public ArrayList<Object> getAppointments(AdvisorUser user) throws SQLException;
 	public ArrayList<Object> getAppointments(StudentUser user) throws SQLException;
 	public ArrayList<Object> getAppointments(AdminUser user) throws SQLException;

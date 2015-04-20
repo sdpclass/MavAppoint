@@ -59,7 +59,7 @@ public class DatabaseManager {
 			return null;
 	}
 
-	public Boolean cancelAppointment(int id) throws SQLException{
+	public String cancelAppointment(int id) throws SQLException{
 		return imp.cancelAppointment(id);
 	}
 	

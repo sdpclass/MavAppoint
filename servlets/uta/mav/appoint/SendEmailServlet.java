@@ -15,6 +15,8 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import uta.mav.appoint.helpers.Authentication;
+
 
 public class SendEmailServlet extends HttpServlet{
 	/**
@@ -27,8 +29,8 @@ public class SendEmailServlet extends HttpServlet{
 		String to = (String)request.getParameter("to");
 		String subject = (String)request.getParameter("subject");
 		String body = (String)request.getParameter("body");
-		String from = "teststudent@mavs.uta.com";
-		String pw = "sFre192R!";
+		String from = Authentication.getUserPasswordInstance();
+		String pw = Authentication.getUserPasswordInstance();
 		String host = "smtp.gmail.com";
 		String port = "465";
 		Properties properties = System.getProperties();
@@ -47,7 +49,7 @@ public class SendEmailServlet extends HttpServlet{
 		Session session = Session.getDefaultInstance(properties,
 				new javax.mail.Authenticator(){
 					protected PasswordAuthentication getPasswordAuthentication(){
-						return new PasswordAuthentication("maverickappointments@gmail.com","sFre192R!");
+						return new PasswordAuthentication(Authentication.getUserNameInstance(),Authentication.getUserPasswordInstance());
 					}
 		});
 		response.setContentType("text/html");

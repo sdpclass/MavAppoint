@@ -11,18 +11,18 @@ public class CancelAppointmentVisitor extends Visitor{
 	@Override
 	public ArrayList<Object> check(AdvisorUser user,Object o){
 		try{
-		DatabaseManager dbm = new DatabaseManager();
-		int id = (int)o;
-		Boolean result = dbm.cancelAppointment(id);
-		if (result == true){
-			user.setMsg("Appointment has been cancelled.");
-		}
-		else{
-			user.setMsg("Unable to cancel appointment.");
-		}
+			DatabaseManager dbm = new DatabaseManager();
+			int id = (int)o;
+			String result = dbm.cancelAppointment(id);
+			if (result.equals("-1")){
+				user.setMsg("Appointment has been cancelled.");
+				
+			}
+			else{
+				user.setMsg("Unable to cancel appointment.");
+			}
 		}
 		catch(Exception e){
-
 			user.setMsg("Unable to cancel appointment. Something went wrong...");
 		}
 		return null;
@@ -31,15 +31,15 @@ public class CancelAppointmentVisitor extends Visitor{
 	@Override
 	public ArrayList<Object> check(StudentUser user,Object o){
 		try{
-		DatabaseManager dbm = new DatabaseManager();
-		int id = (int)o;
-		Boolean result = dbm.cancelAppointment(id);
-		if (result == true){
-			user.setMsg("Appointment has been cancelled.");
-		}
-		else{
-			user.setMsg("Unable to cancel appointment.");
-		}
+			DatabaseManager dbm = new DatabaseManager();
+			int id = (int)o;
+			String result = dbm.cancelAppointment(id);
+			if (result.equals("-1")){
+				user.setMsg("Unable to cancel appointment.");
+			}
+			else{
+				user.setMsg("Appointment has been cancelled.");
+			}
 		}
 		catch(Exception e){
 			System.out.println("Error in check: " + e);

@@ -29,14 +29,13 @@ public class IndexServlet extends HttpServlet{
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		session = request.getSession();
 		LoginUser user = (LoginUser)session.getAttribute("user");
-		Authentication.getUserNameInstance();
 		if (user != null){
 			try{
 				header = "templates/" + user.getHeader() + ".jsp";
 				String date =  new SimpleDateFormat("yyyy-MM-dd").format(new Date());
 				Visitor v = new GetNextAppointmentVisitor();
-				Appointment app = (Appointment)(user.accept(v,(Object)date)).get(0);
-				if (app != null){
+				if ((user.accept(v,(Object)date)).get(0) != null){
+					Appointment app = (Appointment)(user.accept(v,(Object)date)).get(0);
 					session.setAttribute("studentapp",app);
 				}
 			}
